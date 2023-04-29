@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
 using _Game.Scripts.UI.Base;
-using DG.Tweening;
 using GeneralUtils;
 using UnityEngine;
 using UnityEngine.AI;
@@ -95,8 +93,8 @@ namespace _Game.Scripts {
 
                 if (NavMesh.SamplePosition(testPosition, out var hit, maxDistance, NavMesh.AllAreas)
                     && NavMesh.FindClosestEdge(hit.position, out var edgeHit, NavMesh.AllAreas)) {
-                    _edgeNormals.Add((edgeHit.position, edgeHit.normal));
-                    _points.Add((hit.position, hit.normal));
+                    // _edgeNormals.Add((edgeHit.position, edgeHit.normal));
+                    // _points.Add((hit.position, hit.normal));
 
                     return Vector3.Distance(hit.position, edgeHit.position) <= radius
                         ? edgeHit.position + edgeHit.normal * radius
@@ -105,20 +103,20 @@ namespace _Game.Scripts {
             }
         }
 
-        private List<(Vector3, Vector3)> _edgeNormals = new List<(Vector3, Vector3)>();
-        private List<(Vector3, Vector3)> _points = new List<(Vector3, Vector3)>();
-
-        private void OnDrawGizmos() {
-            Gizmos.color = Color.blue;
-            foreach (var (pos, norm) in _points) {
-                Gizmos.DrawSphere(pos, 0.1f);
-                Gizmos.DrawLine(pos, pos + norm);
-            }
-            Gizmos.color = Color.red;
-            foreach (var (pos, norm) in _edgeNormals) {
-                Gizmos.DrawSphere(pos, 0.1f);
-                Gizmos.DrawLine(pos, pos + norm);
-            }
-        }
+        // private List<(Vector3, Vector3)> _edgeNormals = new List<(Vector3, Vector3)>();
+        // private List<(Vector3, Vector3)> _points = new List<(Vector3, Vector3)>();
+        //
+        // private void OnDrawGizmos() {
+        //     Gizmos.color = Color.blue;
+        //     foreach (var (pos, norm) in _points) {
+        //         Gizmos.DrawSphere(pos, 0.1f);
+        //         Gizmos.DrawLine(pos, pos + norm);
+        //     }
+        //     Gizmos.color = Color.red;
+        //     foreach (var (pos, norm) in _edgeNormals) {
+        //         Gizmos.DrawSphere(pos, 0.1f);
+        //         Gizmos.DrawLine(pos, pos + norm);
+        //     }
+        // }
     }
 }
