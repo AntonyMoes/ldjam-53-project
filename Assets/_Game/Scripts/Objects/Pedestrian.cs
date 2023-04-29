@@ -1,5 +1,7 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.AI;
 
 namespace _Game.Scripts.Objects {
     public class Pedestrian : MonoBehaviour {
@@ -7,6 +9,8 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Material _defaultMaterial;
         [SerializeField] private Material _targetMaterial;
         [SerializeField] private Renderer _renderer;
+        [SerializeField] private NavMeshAgent _agent;
+        [SerializeField] private Collider _collider;
 
         private readonly Action<Pedestrian> _onCollision;
         public GeneralUtils.Event<Pedestrian> OnCollision { get; }
@@ -20,6 +24,9 @@ namespace _Game.Scripts.Objects {
             }
         }
 
+        private bool _killed;
+        private Func<Vector3> _getNextPosition;
+
         public Pedestrian() {
             OnCollision = new GeneralUtils.Event<Pedestrian>(out _onCollision);
         }
@@ -30,6 +37,29 @@ namespace _Game.Scripts.Objects {
             }
 
             _onCollision(this);
+            Physics.IgnoreCollision(collision.collider, _collider);
+        }
+
+        public void Setup(Vector3 startPosition, Func<Vector3> getNextPosition) {
+            transform.position = startPosition;
+            _getNextPosition = getNextPosition;
+            _agent.SetDestination(_getNextPosition());
+        }
+
+        public void Kill() {
+            _killed = true;
+            _agent.enabled = false;
+            DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+        }
+
+        private void Update() {
+            if (_killed) {
+                return;
+            }
+
+            if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance && (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f)) {
+                _agent.SetDestination(_getNextPosition());
+            }
         }
     }
 }

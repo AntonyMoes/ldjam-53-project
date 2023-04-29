@@ -18,5 +18,8 @@ namespace _Game.Scripts {
 
         [SerializeField] private float _patienceOnMistake;
         public float PatienceOnMistake => _patienceOnMistake;
+
+        [SerializeField] private int _population;
+        public int Population => _population;
     }
 }
