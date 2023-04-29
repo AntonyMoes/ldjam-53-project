@@ -1,7 +1,6 @@
-using System;
 using UnityEngine;
 
-namespace _Game.Scripts {
+namespace _Game.Scripts.Objects {
     public class Player : MonoBehaviour {
         [SerializeField] private Rigidbody _rb;
 
@@ -68,6 +67,16 @@ namespace _Game.Scripts {
         }
 
         private void UpdateVelocity(float acceleration, float brake, float steering, float deltaTime) {
+            if (CurrentVelocity != 0 && steering != 0) {
+                // Debug.Log($"Vel: {CurrentVelocity}, Steer: {steering}");
+                var radius = Mathf.Abs(CurrentVelocity) / _maxVelocity * (_maxSteerRadius - _minSteerRadius) + _minSteerRadius;
+                var circumference = radius * 2 * Mathf.PI;
+                var angles = CurrentVelocity * deltaTime / circumference * 360;
+                // Debug.Log($"Rad: {radius}, Ang: {angles}");
+                _rb.rotation *= Quaternion.Euler(0, angles * Mathf.Sign(steering), 0);
+                // _rb.rotation 
+            }
+
             // Debug.Log($"Acc: {acceleration}, Br: {brake}");
             var delta = (acceleration + brake) * deltaTime;
             if (delta == 0) {
@@ -75,15 +84,6 @@ namespace _Game.Scripts {
             }
 
             _rb.velocity = transform.forward * Mathf.Clamp(CurrentVelocity + delta, -_maxBackVelocity, _maxVelocity);
-
-            if (CurrentVelocity != 0 && steering != 0) {
-                // Debug.Log($"Vel: {CurrentVelocity}, Steer: {steering}");
-                var radius = Mathf.Abs(CurrentVelocity) / _maxVelocity * (_maxSteerRadius - _minSteerRadius) + _minSteerRadius;
-                var circumference = radius * 2 * Mathf.PI;
-                var angles = CurrentVelocity * deltaTime / circumference * 360;
-                // Debug.Log($"Rad: {radius}, Ang: {angles}");
-                _rb.MoveRotation(_rb.rotation * Quaternion.Euler(0, angles * Mathf.Sign(steering), 0));
-            }
         }
     }
 }
