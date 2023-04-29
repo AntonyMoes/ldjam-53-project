@@ -7545,7 +7545,7 @@ MonoBehaviour:
     _patienceOnSuccess: 20
     _patienceOnFail: 0
     _patienceOnMistake: 30
-    _population: 200
+    _population: 80
 --- !u!1 &2115927088
 GameObject:
   m_ObjectHideFlags: 0

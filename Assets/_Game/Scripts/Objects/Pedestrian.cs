@@ -11,6 +11,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Renderer _renderer;
         [SerializeField] private NavMeshAgent _agent;
         [SerializeField] private Collider _collider;
+        [SerializeField] private Rigidbody _rb;
 
         private readonly Action<Pedestrian> _onCollision;
         public GeneralUtils.Event<Pedestrian> OnCollision { get; }
@@ -44,11 +45,13 @@ namespace _Game.Scripts.Objects {
             transform.position = startPosition;
             _getNextPosition = getNextPosition;
             _agent.SetDestination(_getNextPosition());
+            _rb.useGravity = false;
         }
 
         public void Kill() {
             _killed = true;
             _agent.enabled = false;
+            _rb.useGravity = true;
             DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
         }
 

@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7402112548642648632}
+  - component: {fileID: 6022657900304183622}
   - component: {fileID: 7402112548642648635}
   - component: {fileID: 7402112548642648634}
   - component: {fileID: 7402112548642648633}
   - component: {fileID: 7402112548642648628}
-  - component: {fileID: 6022657900304183622}
   - component: {fileID: -5901899584991905079}
   m_Layer: 7
   m_Name: Pedestrian
@@ -36,6 +36,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6022657900304183622
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7402112548642648639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 481a5e6476c323e469a677459092f05f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _collisionMask:
+    serializedVersion: 2
+    m_Bits: 64
+  _defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  _targetMaterial: {fileID: 2100000, guid: 394176009e689a04cb355fac33ddf5ee, type: 2}
+  _renderer: {fileID: 7402112548642648634}
+  _agent: {fileID: -5901899584991905079}
+  _collider: {fileID: 7402112548642648633}
+  _rb: {fileID: 7402112548642648628}
 --- !u!33 &7402112548642648635
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -115,26 +136,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &6022657900304183622
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7402112548642648639}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 481a5e6476c323e469a677459092f05f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _collisionMask:
-    serializedVersion: 2
-    m_Bits: 64
-  _defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
-  _targetMaterial: {fileID: 2100000, guid: 394176009e689a04cb355fac33ddf5ee, type: 2}
-  _renderer: {fileID: 7402112548642648634}
-  _agent: {fileID: -5901899584991905079}
-  _collider: {fileID: 7402112548642648633}
 --- !u!195 &-5901899584991905079
 NavMeshAgent:
   m_ObjectHideFlags: 0
