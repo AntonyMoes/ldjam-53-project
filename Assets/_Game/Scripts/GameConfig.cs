@@ -4,6 +4,7 @@ using UnityEngine;
 namespace _Game.Scripts {
     [Serializable]
     public class GameConfig {
+        [Header("Patience")]
         [SerializeField] private float _maxPatience;
         public float MaxPatience => _maxPatience;
 
@@ -19,6 +20,11 @@ namespace _Game.Scripts {
         [SerializeField] private float _patienceOnMistake;
         public float PatienceOnMistake => _patienceOnMistake;
 
+        [Header("Orders")]
+        [SerializeField] private float _defaultTimer;
+        public float DefaultTimer => _defaultTimer;
+
+        [Header("City")]
         [SerializeField] private int _population;
         public int Population => _population;
     }

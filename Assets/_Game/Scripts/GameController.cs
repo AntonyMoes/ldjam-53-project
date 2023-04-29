@@ -1,15 +1,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
+using _Game.Scripts.UI;
 using _Game.Scripts.UI.Base;
+using DG.Tweening;
 using GeneralUtils;
+using GeneralUtils.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace _Game.Scripts {
     public class GameController : SingletonBehaviour<GameController> {
-        [Header("Game UI")]
+        [Header("UI")]
         [SerializeField] private ProgressBar _patienceProgressBar;
+        [SerializeField] private TargetTimer _targetTimer;
 
         [Header("Objects")]
         [SerializeField] private Player _player;
@@ -23,6 +27,11 @@ namespace _Game.Scripts {
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
         private Rng _rng;
+
+        private readonly UpdatedValue<float> _timer = new UpdatedValue<float>();
+        private Pedestrian _currentTarget;
+        private Tween _timerTween;
+        private bool _lost;
 
         public GameController() {
             _patience = new UpdatedValue<float>(setter: SetPatience);
@@ -40,6 +49,7 @@ namespace _Game.Scripts {
             _patience.Value = _config.InitialPatience;
             _patienceProgressBar.Load(0, _config.MaxPatience);
             _patience.Subscribe(val => _patienceProgressBar.CurrentValue = val, true);
+            _patience.WaitFor(0f, OnLose);
         }
 
         private void OnPedestrianCollision(Pedestrian pedestrian) {
@@ -51,26 +61,65 @@ namespace _Game.Scripts {
             // TODO
             if (pedestrian.IsTarget) {
                 Debug.LogError("Nice!");
-                pedestrian.IsTarget = false;
-
                 _patience.Value += _config.PatienceOnSuccess;
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
                 _patience.Value -= _config.PatienceOnMistake;
-                if (_patience.Value == 0) {
-                    Debug.LogError("GAME OVER");
-                    Destroy(_player.gameObject);
-                }
             }
         }
 
+        private void OnTimerEnd() {
+            Debug.LogError("Late!");
+            _patience.Value -= _config.PatienceOnFail;
+
+            if (_lost) {
+                return;
+            }
+
+            SetTarget();
+        }
+
+        private void OnLose() {
+            Debug.LogError("GAME OVER");
+            _lost = true;
+            StopTimer();
+            Destroy(_player.gameObject);
+        }
+
         private void SetTarget() {
+            StopTimer();
+            if (_currentTarget != null) {
+                _currentTarget.IsTarget = false;
+                _currentTarget = null;
+            }
+
             if (_pedestrians.Count == 0) {
                 return;
             }
 
-            _rng.NextChoice(_pedestrians).IsTarget = true;
+            _currentTarget = _rng.NextChoice(_pedestrians);
+            _currentTarget.IsTarget = true;
+            StartTimer();
+        }
+
+        private void StartTimer() {
+            var duration = _config.DefaultTimer;
+            _timer.Value = duration;
+            _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
+                _targetTimer.Load(duration, _timer, _currentTarget.transform);
+                _targetTimer.Show();
+            });
+            _timerTween = DOVirtual
+                .Float(duration, 0f, duration, val => _timer.Value = val)
+                .SetEase(Ease.Linear)
+                .OnComplete(OnTimerEnd);
+        }
+
+        private void StopTimer() {
+            _targetTimer.Hide();
+            _targetTimer.Unload();
+            _timerTween?.Kill();
         }
 
         private Pedestrian SpawnPedestrian() {
