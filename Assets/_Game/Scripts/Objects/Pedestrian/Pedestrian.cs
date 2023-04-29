@@ -27,9 +27,6 @@ namespace _Game.Scripts.Objects.Pedestrian {
         }
 
         private readonly StateMachine<PedestrianState> _stateMachine = new StateMachine<PedestrianState>();
-        // private float _speed;
-        // private Func<Vector3> _getNextPosition;
-        // private Func<Vector3, Vector3> _getClosestAvailablePosition;
         private bool _killed;
 
         public Pedestrian() {
@@ -46,12 +43,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         }
 
         public void Setup(float speed, Vector3 startPosition, Func<Vector3> getNextPosition, Func<Vector3, Vector3> getClosestAvailablePosition) {
-            // _speed = speed;
-            // _agent.speed = speed;
             transform.position = startPosition;
-            // _getNextPosition = getNextPosition;
-            // _getClosestAvailablePosition = getClosestAvailablePosition;
-            // _agent.SetDestination(_getNextPosition());
             _rb.useGravity = false;
 
             _stateMachine.AddState(PedestrianState.Walk, new WalkState(_agent, speed, getNextPosition));
@@ -75,18 +67,6 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
 
             _stateMachine.Update(Time.deltaTime);
-            // var config = Locator.Instance.Config;
-            // var distanceToPlayer = Vector3.Distance(GameController.Instance.Player.transform.position, transform.position);
-            // if (distanceToPlayer < config.EvadeRadius) {
-            //     // go to state: evade
-            // }
-            //
-            // if (!_agent.pathPending && _agent.remainingDistance <= _agent.stoppingDistance && (!_agent.hasPath || _agent.velocity.sqrMagnitude == 0f)) {
-            //     // state: came to destination
-            //     _agent.SetDestination(_getNextPosition());
-            // }
-            //
-            // // state: moving
         }
     }
 }

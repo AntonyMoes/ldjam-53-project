@@ -139,24 +139,12 @@ namespace _Game.Scripts {
         }
 
         private Vector3 GetRandomNavMeshPosition() {
-            // const float maxDistance = 3f;
             var bounds = _mapPlane.bounds;
-            // var radius = NavMesh.GetSettingsByIndex(0).agentRadius * 1.1f;
 
             while (true) {
                 var testX = _rng.NextFloat(bounds.min.x, bounds.max.x);
                 var testZ = _rng.NextFloat(bounds.min.z, bounds.max.z);
                 var testPosition = new Vector3(testX, bounds.max.y, testZ);
-
-                // if (NavMesh.SamplePosition(testPosition, out var hit, maxDistance, NavMesh.AllAreas)
-                //     && NavMesh.FindClosestEdge(hit.position, out var edgeHit, NavMesh.AllAreas)) {
-                //     // _edgeNormals.Add((edgeHit.position, edgeHit.normal));
-                //     // _points.Add((hit.position, hit.normal));
-                //
-                //     return Vector3.Distance(hit.position, edgeHit.position) <= radius
-                //         ? edgeHit.position + edgeHit.normal * radius
-                //         : hit.position;
-                // }
 
                 var position = GetClosestAvailablePosition(testPosition);
                 if (position is { } pos) {
