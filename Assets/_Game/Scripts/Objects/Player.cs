@@ -1,3 +1,4 @@
+using GeneralUtils;
 using UnityEngine;
 
 namespace _Game.Scripts.Objects {
@@ -36,34 +37,39 @@ namespace _Game.Scripts.Objects {
         }
 
         private void OnDrawGizmos() {
-            // Debug.Log($"Vel: {_rb.velocity}, For: {_rb.transform.forward}, Proj: {Vector3.Project(_rb.velocity, _rb.transform.forward)}");
-            var vertical = Input.GetAxisRaw("Vertical");
-            var horizontal = Input.GetAxisRaw("Horizontal");
-
-            var acceleration = CurrentVelocity == 0
-                ? vertical
-                : CurrentVelocity > 0
-                    ? Mathf.Clamp(vertical, 0, 1) * _acceleration
-                    : Mathf.Clamp(vertical, -1, 0) * _backAcceleration;
-            var brake = (CurrentVelocity == 0
-                            ? 0
-                            : CurrentVelocity > 0
-                                ? -1 * Mathf.Clamp(vertical, -1, 0)
-                                : Mathf.Clamp(vertical, 0, 1))
-                        * _brakeAcceleration;
-
-            var center = transform.position;
-            var forward = transform.forward;
-            var right = transform.right;
-            Gizmos.color = Color.blue;
-            Gizmos.DrawLine(center, center + forward * acceleration * 3);
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(center, center + forward * brake  * 3);
-            // Gizmos.DrawLine(center, center + _rb.transform.forward  * 3);
-            // Gizmos.color = Color.cyan;
-            // Gizmos.DrawLine(center, center + right * horizontal * 3);
-            Gizmos.color = Color.black;
-            Gizmos.DrawLine(center, center + _rb.velocity * 5);
+            // // Debug.Log($"Vel: {_rb.velocity}, For: {_rb.transform.forward}, Proj: {Vector3.Project(_rb.velocity, _rb.transform.forward)}");
+            // var vertical = Input.GetAxisRaw("Vertical");
+            // var horizontal = Input.GetAxisRaw("Horizontal");
+            //
+            // var acceleration = CurrentVelocity == 0
+            //     ? vertical
+            //     : CurrentVelocity > 0
+            //         ? Mathf.Clamp(vertical, 0, 1) * _acceleration
+            //         : Mathf.Clamp(vertical, -1, 0) * _backAcceleration;
+            // var brake = (CurrentVelocity == 0
+            //                 ? 0
+            //                 : CurrentVelocity > 0
+            //                     ? -1 * Mathf.Clamp(vertical, -1, 0)
+            //                     : Mathf.Clamp(vertical, 0, 1))
+            //             * _brakeAcceleration;
+            //
+            // var center = transform.position;
+            // var forward = transform.forward;
+            // var right = transform.right;
+            // Gizmos.color = Color.blue;
+            // Gizmos.DrawLine(center, center + forward * acceleration * 3);
+            // Gizmos.color = Color.red;
+            // Gizmos.DrawLine(center, center + forward * brake  * 3);
+            // // Gizmos.DrawLine(center, center + _rb.transform.forward  * 3);
+            // // Gizmos.color = Color.cyan;
+            // // Gizmos.DrawLine(center, center + right * horizontal * 3);
+            // Gizmos.color = Color.black;
+            // Gizmos.DrawLine(center, center + _rb.velocity * 5);
+            
+            Gizmos.color = Color.blue.WithAlpha(0.1f);
+            Gizmos.DrawSphere(transform.position, Locator.Instance.Config.BewareRadius);
+            Gizmos.color = Color.red.WithAlpha(0.1f);;
+            Gizmos.DrawSphere(transform.position, Locator.Instance.Config.EvadeRadius);
         }
 
         private void UpdateVelocity(float acceleration, float brake, float steering, float deltaTime) {

@@ -1,16 +1,18 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Game.Scripts.Objects {
     public class CameraController : MonoBehaviour {
-        [SerializeField] private Transform _target;
         [SerializeField] private Vector3 _delta;
 
+        public Transform Target { get; set; }
+
         private void LateUpdate() {
-            if (_target == null) {
+            if (Target == null) {
                 return;
             }
 
-            transform.position = _target.position + _delta;
+            transform.position = Target.position + _delta;
         }
     }
 }

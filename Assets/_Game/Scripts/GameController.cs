@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
+using _Game.Scripts.Objects.Pedestrian;
 using _Game.Scripts.UI;
 using _Game.Scripts.UI.Base;
 using DG.Tweening;
@@ -16,13 +17,14 @@ namespace _Game.Scripts {
         [SerializeField] private TargetTimer _targetTimer;
 
         [Header("Objects")]
-        [SerializeField] private Player _player;
+        [SerializeField] private CameraController _cameraController;
+        [SerializeField] private Player _playerPrefab;
+        [SerializeField] private Transform _playerSpawn;
         [SerializeField] private Pedestrian _pedestrianPrefab;
         [SerializeField] private Transform _pedestrianParent;
         [SerializeField] private MeshCollider _mapPlane;
 
-        [Header("Config")]
-        [SerializeField] private GameConfig _config;
+        public Player Player { get; private set; }
 
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
@@ -37,17 +39,20 @@ namespace _Game.Scripts {
             _patience = new UpdatedValue<float>(setter: SetPatience);
         }
 
-        private float SetPatience(float value) => Mathf.Clamp(value, 0, _config.MaxPatience);
+        private float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
 
         private void Start() {
             _rng = new Rng(Rng.RandomSeed);
 
-            // _pedestrians = FindObjectsOfType<Pedestrian>().ToList();
-            _pedestrians = Enumerable.Range(0, _config.Population).Select(_ => SpawnPedestrian()).ToList();
+            Player = Instantiate(_playerPrefab, _playerSpawn);
+            _cameraController.Target = Player.transform;
+
+            var config = Locator.Instance.Config;
+            _pedestrians = Enumerable.Range(0, config.Population).Select(_ => SpawnPedestrian()).ToList();
             SetTarget();
 
-            _patience.Value = _config.InitialPatience;
-            _patienceProgressBar.Load(0, _config.MaxPatience);
+            _patience.Value = config.InitialPatience;
+            _patienceProgressBar.Load(0, config.MaxPatience);
             _patience.Subscribe(val => _patienceProgressBar.CurrentValue = val, true);
             _patience.WaitFor(0f, OnLose);
         }
@@ -58,20 +63,20 @@ namespace _Game.Scripts {
             _pedestrians.Remove(pedestrian);
             _pedestrians.Add(SpawnPedestrian());
 
-            // TODO
+            var config = Locator.Instance.Config;
             if (pedestrian.IsTarget) {
                 Debug.LogError("Nice!");
-                _patience.Value += _config.PatienceOnSuccess;
+                _patience.Value += config.PatienceOnSuccess;
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
-                _patience.Value -= _config.PatienceOnMistake;
+                _patience.Value -= config.PatienceOnMistake;
             }
         }
 
         private void OnTimerEnd() {
             Debug.LogError("Late!");
-            _patience.Value -= _config.PatienceOnFail;
+            _patience.Value -= Locator.Instance.Config.PatienceOnFail;
 
             if (_lost) {
                 return;
@@ -84,7 +89,7 @@ namespace _Game.Scripts {
             Debug.LogError("GAME OVER");
             _lost = true;
             StopTimer();
-            Destroy(_player.gameObject);
+            Destroy(Player.gameObject);
         }
 
         private void SetTarget() {
@@ -104,7 +109,7 @@ namespace _Game.Scripts {
         }
 
         private void StartTimer() {
-            var duration = _config.DefaultTimer;
+            var duration = Locator.Instance.Config.DefaultTimer;
             _timer.Value = duration;
             _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
                 _targetTimer.Load(duration, _timer, _currentTarget.transform);
@@ -123,24 +128,51 @@ namespace _Game.Scripts {
         }
 
         private Pedestrian SpawnPedestrian() {
-            var position = GetRandomNavMeshPosition();
             var pedestrian = Instantiate(_pedestrianPrefab, _pedestrianParent);
-            pedestrian.Setup(position, GetRandomNavMeshPosition);
+
+            var position = GetRandomNavMeshPosition();
+            var config = Locator.Instance.Config;
+            var speed = _rng.NextFloat(config.MinSpeed, config.MaxSpeed);
+            pedestrian.Setup(speed, position, GetRandomNavMeshPosition, pos => GetClosestAvailablePosition(pos, true)!.Value);
             pedestrian.OnCollision.Subscribe(OnPedestrianCollision);
             return pedestrian;
         }
 
         private Vector3 GetRandomNavMeshPosition() {
-            const float maxDistance = 3f;
+            // const float maxDistance = 3f;
             var bounds = _mapPlane.bounds;
-            var radius = NavMesh.GetSettingsByIndex(0).agentRadius * 1.1f;
+            // var radius = NavMesh.GetSettingsByIndex(0).agentRadius * 1.1f;
 
             while (true) {
                 var testX = _rng.NextFloat(bounds.min.x, bounds.max.x);
                 var testZ = _rng.NextFloat(bounds.min.z, bounds.max.z);
                 var testPosition = new Vector3(testX, bounds.max.y, testZ);
 
-                if (NavMesh.SamplePosition(testPosition, out var hit, maxDistance, NavMesh.AllAreas)
+                // if (NavMesh.SamplePosition(testPosition, out var hit, maxDistance, NavMesh.AllAreas)
+                //     && NavMesh.FindClosestEdge(hit.position, out var edgeHit, NavMesh.AllAreas)) {
+                //     // _edgeNormals.Add((edgeHit.position, edgeHit.normal));
+                //     // _points.Add((hit.position, hit.normal));
+                //
+                //     return Vector3.Distance(hit.position, edgeHit.position) <= radius
+                //         ? edgeHit.position + edgeHit.normal * radius
+                //         : hit.position;
+                // }
+
+                var position = GetClosestAvailablePosition(testPosition);
+                if (position is { } pos) {
+                    return pos;
+                }
+            }
+        }
+
+        private Vector3? GetClosestAvailablePosition(Vector3 position, bool retry = false) {
+            const float initialMaxDistance = 3f;
+            const float maxDistanceModifier = 1.5f;
+
+            var radius = NavMesh.GetSettingsByIndex(0).agentRadius * 1.1f;
+            var maxDistance = initialMaxDistance;
+            do {
+                if (NavMesh.SamplePosition(position, out var hit, maxDistance, NavMesh.AllAreas)
                     && NavMesh.FindClosestEdge(hit.position, out var edgeHit, NavMesh.AllAreas)) {
                     // _edgeNormals.Add((edgeHit.position, edgeHit.normal));
                     // _points.Add((hit.position, hit.normal));
@@ -149,7 +181,11 @@ namespace _Game.Scripts {
                         ? edgeHit.position + edgeHit.normal * radius
                         : hit.position;
                 }
-            }
+
+                maxDistance *= maxDistanceModifier;
+            } while (retry);
+
+            return null;
         }
 
         // private List<(Vector3, Vector3)> _edgeNormals = new List<(Vector3, Vector3)>();

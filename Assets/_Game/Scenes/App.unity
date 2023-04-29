@@ -472,17 +472,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1249336697504939303, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
   m_PrefabInstance: {fileID: 1249336697349029672}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &167576083 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
-  m_PrefabInstance: {fileID: 1249336697349029672}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a8cd68352e931a14cb8552a8b37b3a5d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &180026397
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1836,7 +1825,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39d27d87dfba6e34187a3700267c058f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _target: {fileID: 167576079}
   _delta: {x: 0, y: 31.025, z: -23}
 --- !u!20 &519420031
 Camera:
@@ -2663,6 +2651,36 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 228077486661019968, guid: 780ff88e6c949aa449cc862e87019aae, type: 3}
   m_PrefabInstance: {fileID: 758471344}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &770640689
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 770640690}
+  m_Layer: 0
+  m_Name: PlayerSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &770640690
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 770640689}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.55, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 917418137}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &793808355
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3013,7 +3031,7 @@ Transform:
   - {fileID: 1421951664}
   - {fileID: 1053260956}
   m_Father: {fileID: 917418137}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &873572837
 PrefabInstance:
@@ -3260,6 +3278,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 770640690}
   - {fileID: 167576079}
   - {fileID: 864743093}
   - {fileID: 1110739668}
@@ -3772,7 +3791,7 @@ Transform:
   - {fileID: 1573883321}
   - {fileID: 1469108954}
   m_Father: {fileID: 917418137}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1122909320
 PrefabInstance:
@@ -7329,18 +7348,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _patienceProgressBar: {fileID: 1421478930}
   _targetTimer: {fileID: 86919478}
-  _player: {fileID: 167576083}
+  _cameraController: {fileID: 519420030}
+  _playerPrefab: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+  _playerSpawn: {fileID: 770640690}
   _pedestrianPrefab: {fileID: 6022657900304183622, guid: dae12a64239e75b4bad479f2899c19e6, type: 3}
   _pedestrianParent: {fileID: 917418137}
   _mapPlane: {fileID: 2115927090}
-  _config:
-    _maxPatience: 100
-    _initialPatience: 50
-    _patienceOnSuccess: 20
-    _patienceOnFail: 40
-    _patienceOnMistake: 30
-    _defaultTimer: 30
-    _population: 80
 --- !u!114 &2110590953
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7356,6 +7369,19 @@ MonoBehaviour:
   _mainCamera: {fileID: 519420031}
   _uiCamera: {fileID: 1252260608}
   _canvas: {fileID: 215032965}
+  _config:
+    _maxPatience: 100
+    _initialPatience: 50
+    _patienceOnSuccess: 20
+    _patienceOnFail: 40
+    _patienceOnMistake: 30
+    _defaultTimer: 30
+    _population: 80
+    _minSpeed: 2
+    _maxSpeed: 5
+    _evadeRadius: 6
+    _bewareRadius: 11
+    _bewareSpeedModifier: 0.4
 --- !u!1 &2115927088
 GameObject:
   m_ObjectHideFlags: 0
@@ -7728,9 +7754,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: Truck-Kun
       objectReference: {fileID: 0}
+    - target: {fileID: 1249336697504939302, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1249336697504939303, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1249336697504939303, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -7966,6 +7996,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TargetTimer
       objectReference: {fileID: 0}
+    - target: {fileID: 5839566540305546615, guid: 11054639d04a18240bdb7fb5f6a558df, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -2413806693520163455, guid: ebe73ca9363db456bacf42c025bb4847, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 11054639d04a18240bdb7fb5f6a558df, type: 3}
 --- !u!1001 &7402112548368218620

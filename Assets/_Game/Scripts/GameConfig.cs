@@ -27,5 +27,21 @@ namespace _Game.Scripts {
         [Header("City")]
         [SerializeField] private int _population;
         public int Population => _population;
+
+        [Header("Pedestrians")]
+        [SerializeField] private float _minSpeed;
+        public float MinSpeed => _minSpeed;
+
+        [SerializeField] private float _maxSpeed;
+        public float MaxSpeed => _maxSpeed;
+
+        [SerializeField] private float _evadeRadius;
+        public float EvadeRadius => _evadeRadius;
+
+        [SerializeField] private float _bewareRadius;
+        public float BewareRadius => _bewareRadius;
+
+        [SerializeField] private float _bewareSpeedModifier;
+        public float BewareSpeedModifier => _bewareSpeedModifier;
     }
 }
