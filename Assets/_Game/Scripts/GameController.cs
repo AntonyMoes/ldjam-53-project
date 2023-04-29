@@ -24,6 +24,9 @@ namespace _Game.Scripts {
         [Header("Config")]
         [SerializeField] private GameConfig _config;
 
+        [Header("TimerFormula")]
+        private float _multiplier;
+
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
         private Rng _rng;
@@ -41,6 +44,7 @@ namespace _Game.Scripts {
 
         private void Start() {
             _rng = new Rng(Rng.RandomSeed);
+            _multiplier = _config.StartMultiplier;
 
             // _pedestrians = FindObjectsOfType<Pedestrian>().ToList();
             _pedestrians = Enumerable.Range(0, _config.Population).Select(_ => SpawnPedestrian()).ToList();
@@ -104,8 +108,11 @@ namespace _Game.Scripts {
         }
 
         private void StartTimer() {
-            var duration = _config.DefaultTimer;
-            _timer.Value = duration;
+            var duration = _timer.Value + _config.DefaultTimer * _multiplier;
+            if (_multiplier > 1)
+                _multiplier -= _config.DeltaMultiplier;
+
+            _timer.Value += duration;
             _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
                 _targetTimer.Load(duration, _timer, _currentTarget.transform);
                 _targetTimer.Show();

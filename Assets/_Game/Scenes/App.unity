@@ -7339,7 +7339,9 @@ MonoBehaviour:
     _patienceOnSuccess: 20
     _patienceOnFail: 40
     _patienceOnMistake: 30
-    _defaultTimer: 30
+    _defaultTimer: 10
+    _startMultiplier: 3
+    _deltaMultiplier: 0.5
     _population: 80
 --- !u!114 &2110590953
 MonoBehaviour:
