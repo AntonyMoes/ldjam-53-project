@@ -38,7 +38,8 @@ namespace _Game.Scripts.Objects.Pedestrian {
         }
 
         public override void OnStateExit() {
-            Agent.destination = _savedPosition;
+            if (Agent.isOnNavMesh)
+                Agent.destination = _savedPosition;
         }
     }
 }

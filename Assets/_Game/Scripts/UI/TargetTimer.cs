@@ -24,7 +24,7 @@ namespace _Game.Scripts.UI {
         }
 
         public void Update() {
-            if (!_loaded) {
+            if (State.Value != EState.Shown) {
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace _Game.Scripts.UI {
                    - (Vector2.one * 0.5f - rect.pivot) * rect.sizeDelta;
         }
 
-        public void Unload() {
+        public override void Clear() {
             if (!_loaded) {
                 return;
             }

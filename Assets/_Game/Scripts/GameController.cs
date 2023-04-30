@@ -1,9 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
 using _Game.Scripts.Objects.Pedestrian;
 using _Game.Scripts.UI;
-using _Game.Scripts.UI.Base;
 using DG.Tweening;
 using GeneralUtils;
 using GeneralUtils.UI;
@@ -13,10 +13,10 @@ using UnityEngine.AI;
 namespace _Game.Scripts {
     public class GameController : SingletonBehaviour<GameController> {
         [Header("UI")]
-        [SerializeField] private ProgressBar _patienceProgressBar;
         [SerializeField] private TargetTimer _targetTimer;
 
         [Header("Objects")]
+        [SerializeField] private GameObject _map;
         [SerializeField] private CameraController _cameraController;
         [SerializeField] private Player _playerPrefab;
         [SerializeField] private Transform _playerSpawn;
@@ -24,12 +24,17 @@ namespace _Game.Scripts {
         [SerializeField] private Transform _pedestrianParent;
         [SerializeField] private MeshCollider _mapPlane;
 
+        private MainMenuWindow _mainMenu;
+        private GameUIPanel _gameUIPanel;
+        private ExitPanel _exitPanel;
+
         public Player Player { get; private set; }
 
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
         private Rng _rng;
 
+        private bool LevelInProgress => _map.activeSelf;
         private readonly UpdatedValue<float> _timer = new UpdatedValue<float>();
         private Pedestrian _currentTarget;
         private Tween _timerTween;
@@ -42,6 +47,11 @@ namespace _Game.Scripts {
         private float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
 
         private void Start() {
+            _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevel);
+        }
+
+        private void StartLevel() {
+            _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
@@ -52,9 +62,33 @@ namespace _Game.Scripts {
             SetTarget();
 
             _patience.Value = config.InitialPatience;
-            _patienceProgressBar.Load(0, config.MaxPatience);
-            _patience.Subscribe(val => _patienceProgressBar.CurrentValue = val, true);
             _patience.WaitFor(0f, OnLose);
+
+            _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience);
+        }
+
+        private void EndLevel(Action onDone) {
+            StopTimer();
+            if (Player != null) {
+                Destroy(Player.gameObject);
+            }
+
+            _map.SetActive(false);
+            _patience.Clear();
+
+            foreach (var pedestrian in _pedestrians) {
+                pedestrian.Kill(true);
+            }
+
+            _gameUIPanel.Hide(onDone);
+        }
+
+        private void RestartLevel() {
+            EndLevel(StartLevel);
+        }
+
+        private void EndLevelAndLeave() {
+            EndLevel(() => _mainMenu.Show());
         }
 
         private void OnPedestrianCollision(Pedestrian pedestrian) {
@@ -90,6 +124,20 @@ namespace _Game.Scripts {
             _lost = true;
             StopTimer();
             Destroy(Player.gameObject);
+
+            _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave, RestartLevel);
+        }
+
+        public void OnCancel() {
+            if (!LevelInProgress) {
+                return;
+            }
+            
+            if (_exitPanel == null || _exitPanel.State.Value == UIElement.EState.Hided) {
+                _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave);
+            } else if (_exitPanel.State.Value == UIElement.EState.Shown && !_exitPanel.Lost) {
+                _exitPanel.Hide();
+            }
         }
 
         private void SetTarget() {
@@ -123,7 +171,6 @@ namespace _Game.Scripts {
 
         private void StopTimer() {
             _targetTimer.Hide();
-            _targetTimer.Unload();
             _timerTween?.Kill();
         }
 
@@ -174,6 +221,12 @@ namespace _Game.Scripts {
             } while (retry);
 
             return null;
+        }
+
+        private void Update() {
+            if (Input.GetButton("Cancel") && LevelInProgress) {
+                OnCancel();
+            }
         }
 
         // private List<(Vector3, Vector3)> _edgeNormals = new List<(Vector3, Vector3)>();
