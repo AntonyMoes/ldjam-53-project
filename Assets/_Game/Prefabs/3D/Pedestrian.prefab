@@ -51,7 +51,7 @@ MonoBehaviour:
   _collisionMask:
     serializedVersion: 2
     m_Bits: 64
-  _defaultMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  _defaultMaterial: {fileID: 2100000, guid: 6b703e0b0b03f45488ab51c270f050d8, type: 2}
   _targetMaterial: {fileID: 2100000, guid: 394176009e689a04cb355fac33ddf5ee, type: 2}
   _renderer: {fileID: 7402112548642648634}
   _agent: {fileID: -5901899584991905079}
@@ -84,7 +84,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 6b703e0b0b03f45488ab51c270f050d8, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
