@@ -128,7 +128,11 @@ namespace _Game.Scripts {
             if (pedestrian.IsTarget) {
                 Debug.LogError("Nice!");
                 UpdateOrdersCompleted();
+                int score = _score.Value;
                 UpdateScore((150 - Convert.ToInt32(100 * Mathf.Min((_startOrderTime - _timer.Value) / _currentOrderTime, 1))) * (_patience.Value == 100 ? 2 : 1));
+                if (_score.Value / config.DeltaPointsForSpeedUp - score / config.DeltaPointsForSpeedUp > 0) {
+                    SpeedUpPedestrian(config.DeltaSpeed);
+                }
                 Debug.LogError(_ordersCompleted.Value);
                 Debug.LogError(_score.Value);
                 _patience.Value += config.PatienceOnSuccess;
@@ -136,6 +140,12 @@ namespace _Game.Scripts {
             } else {
                 Debug.LogError("Wrong!");
                 _patience.Value -= config.PatienceOnMistake;
+            }
+        }
+
+        private void SpeedUpPedestrian(float deltaSpeed) {
+            foreach (var pedestrian in _pedestrians) {
+                pedestrian.Speed.Value += deltaSpeed;
             }
         }
 
@@ -226,7 +236,7 @@ namespace _Game.Scripts {
 
             var position = GetRandomNavMeshPosition();
             var config = Locator.Instance.Config;
-            var speed = _rng.NextFloat(config.MinSpeed, config.MaxSpeed);
+            var speed = _rng.NextFloat(config.MinSpeed, config.MaxSpeed) + config.DeltaSpeed * (float)(_score.Value / config.DeltaPointsForSpeedUp);
             pedestrian.Setup(speed, position, GetRandomNavMeshPosition, pos => GetClosestAvailablePosition(pos, true)!.Value);
             pedestrian.OnCollision.Subscribe(OnPedestrianCollision);
             return pedestrian;
