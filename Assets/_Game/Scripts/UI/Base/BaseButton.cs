@@ -23,7 +23,7 @@ namespace _Game.Scripts.UI.Base {
         }
 
         private void OnButtonClick() {
-            // SoundController.Instance.PlaySound(SoundController.Instance.ButtonPressClip, 0.3f);
+            // SoundController.Instance.PlaySound("among", 0.3f);
             _onClick();
         }
     }

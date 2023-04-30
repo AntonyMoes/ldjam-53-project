@@ -5,7 +5,15 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Vector3 _delta;
         [SerializeField] private float _smoothSpeed;
 
-        public Player Target { get; set; }
+        private Player _player;
+
+        public Player Target {
+            get => _player;
+            set {
+                _player = value;
+                UpdatePosition(true);
+            }
+        }
 
         private void FixedUpdate() {
             if (Target == null) {
@@ -13,10 +21,19 @@ namespace _Game.Scripts.Objects {
             }
 
             // transform.position = Vector3.Lerp(transform.position, Target.LookPoint.position + _delta, _smoothSpeed);
-            transform.position = Vector3.Lerp(transform.position, Target.transform.position + _delta, _smoothSpeed);
             // transform.LookAt(Target.LookPoint);
-            transform.LookAt(Target.transform);
             // transform.position = Target.transform.position + _delta;
+            UpdatePosition();
+        }
+
+        private void UpdatePosition(bool force = false) {
+            if (Target == null) {
+                return;
+            }
+
+            var targetPosition = Target.transform.position + _delta;
+            transform.position = force ? targetPosition : Vector3.Lerp(transform.position, targetPosition, _smoothSpeed);
+            transform.LookAt(Target.transform);
         }
     }
 }
