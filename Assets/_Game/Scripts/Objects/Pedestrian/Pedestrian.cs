@@ -28,6 +28,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
 
         private readonly StateMachine<PedestrianState> _stateMachine = new StateMachine<PedestrianState>();
         private bool _killed;
+        private Tween _destructionAnimation;
 
         public Pedestrian() {
             OnCollision = new GeneralUtils.Event<Pedestrian>(out _onCollision);
@@ -53,12 +54,19 @@ namespace _Game.Scripts.Objects.Pedestrian {
             _stateMachine.Start();
         }
 
-        public void Kill() {
+        public void Kill(bool immediate = false) {
             _stateMachine.Stop();
             _killed = true;
             _agent.enabled = false;
             _rb.useGravity = true;
-            DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+
+            if (immediate) {
+                _destructionAnimation?.Kill();
+                Destroy(gameObject);
+            } else {
+                // TODO
+                _destructionAnimation = DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+            }
         }
 
         private void Update() {
