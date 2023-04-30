@@ -28,8 +28,8 @@ namespace _Game.Scripts.Objects {
         }
 
         private void FixedUpdate() {
-            var vertical = Input.GetAxis("Vertical");
-            var horizontal = Input.GetAxis("Horizontal");
+            var vertical = Input.GetAxisRaw("Vertical");
+            var horizontal = Input.GetAxisRaw("Horizontal");
 
             var acceleration = CurrentVelocity == 0
                 ? vertical

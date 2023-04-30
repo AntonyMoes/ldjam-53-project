@@ -1417,7 +1417,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -4393050489429634987, guid: 4c9cb331dd895d64dae75c7958b5bf99, type: 3}
   m_PrefabInstance: {fileID: 975285244}
   m_PrefabAsset: {fileID: 0}
---- !u!64 &969463389
+--- !u!64 &969463392
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3095,7 +3095,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2136684888
 Transform:
   m_ObjectHideFlags: 0
