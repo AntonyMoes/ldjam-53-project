@@ -44,6 +44,7 @@ namespace _Game.Scripts {
         private readonly UpdatedValue<float> _timer = new UpdatedValue<float>();
         private Pedestrian _currentTarget;
         private Tween _timerTween;
+        private DitheringController _ditheringController;
         private bool _lost;
 
         public GameController() {
@@ -64,6 +65,7 @@ namespace _Game.Scripts {
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
             _cameraController.Target = Player.transform;
+            _ditheringController = new DitheringController(Player, Locator.Instance.MainCamera);
 
             var config = Locator.Instance.Config;
             _multiplier = config.StartMultiplier;
@@ -81,6 +83,9 @@ namespace _Game.Scripts {
             if (Player != null) {
                 Destroy(Player.gameObject);
             }
+
+            _ditheringController.Dispose();
+            _ditheringController = null;
 
             _map.SetActive(false);
             _patience.Clear();
@@ -244,25 +249,7 @@ namespace _Game.Scripts {
         }
 
         private void Update() {
-            if (Input.GetButton("Cancel") && LevelInProgress) {
-                OnCancel();
-            }
+            _ditheringController?.Update();
         }
-
-        // private List<(Vector3, Vector3)> _edgeNormals = new List<(Vector3, Vector3)>();
-        // private List<(Vector3, Vector3)> _points = new List<(Vector3, Vector3)>();
-        //
-        // private void OnDrawGizmos() {
-        //     Gizmos.color = Color.blue;
-        //     foreach (var (pos, norm) in _points) {
-        //         Gizmos.DrawSphere(pos, 0.1f);
-        //         Gizmos.DrawLine(pos, pos + norm);
-        //     }
-        //     Gizmos.color = Color.red;
-        //     foreach (var (pos, norm) in _edgeNormals) {
-        //         Gizmos.DrawSphere(pos, 0.1f);
-        //         Gizmos.DrawLine(pos, pos + norm);
-        //     }
-        // }
     }
 }

@@ -4,6 +4,8 @@ using UnityEngine;
 namespace _Game.Scripts.Objects {
     public class Player : MonoBehaviour {
         [SerializeField] private Rigidbody _rb;
+        [SerializeField] private Transform[] _ditherCheckPoints;
+        public Transform[] DitherCheckPoints => _ditherCheckPoints;
 
         [Header("Parameters")]
         [SerializeField] private float _acceleration;

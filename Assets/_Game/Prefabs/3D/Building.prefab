@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2360726942167162510}
   - component: {fileID: 2360726942167162511}
   - component: {fileID: 2360726942167162508}
+  - component: {fileID: 7153010207919891439}
   m_Layer: 0
   m_Name: Building
   m_TagString: Untagged
@@ -60,7 +61,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 54ce5d0d2b6eb6b42a268ee034ac014d, type: 2}
+  - {fileID: 2100000, guid: 864546e3be4eba94f9fb0af259ddd8ac, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -95,3 +96,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7153010207919891439
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2360726942167162506}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3c08e21b68144ed6b8793f956c8eceae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _renderer: {fileID: 2360726942167162511}
+  _opaqueMaterial: {fileID: 2100000, guid: 864546e3be4eba94f9fb0af259ddd8ac, type: 2}
+  _transparentMaterial: {fileID: 2100000, guid: 54ce5d0d2b6eb6b42a268ee034ac014d, type: 2}
