@@ -21,8 +21,17 @@ namespace _Game.Scripts {
         public float PatienceOnMistake => _patienceOnMistake;
 
         [Header("Orders")]
+        [SerializeField] private float _guaranteedTimer;
+        public float GuaranteedTimer => _guaranteedTimer;
+
         [SerializeField] private float _defaultTimer;
         public float DefaultTimer => _defaultTimer;
+
+        [SerializeField] private float _startMultiplier;
+        public float StartMultiplier => _startMultiplier;
+
+        [SerializeField] private float _deltaMultiplier;
+        public float DeltaMultiplier => _deltaMultiplier;
 
         [Header("City")]
         [SerializeField] private int _population;

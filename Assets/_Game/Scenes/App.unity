@@ -7944,12 +7944,19 @@ MonoBehaviour:
   _config:
     _maxPatience: 100
     _initialPatience: 50
-    _patienceOnSuccess: 20
-    _patienceOnFail: 40
-    _patienceOnMistake: 30
-    _defaultTimer: 30
+    _patienceOnSuccess: 30
+    _patienceOnFail: 50
+    _patienceOnMistake: 35
+    _guaranteedTimer: 7
+    _defaultTimer: 4
+    _startMultiplier: 3
+    _deltaMultiplier: 0.5
     _population: 80
     _minSpeed: 2
+    _maxSpeed: 7
+    _evadeRadius: 7
+    _bewareRadius: 20
+    _bewareSpeedModifier: 0.6
     _maxSpeed: 5
     _evadeRadius: 6
     _bewareRadius: 11
@@ -8389,6 +8396,22 @@ PrefabInstance:
     - target: {fileID: 1249336697504939303, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+      propertyPath: _maxVelocity
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+      propertyPath: _acceleration
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+      propertyPath: _maxBackVelocity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1249336697504939323, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
+      propertyPath: _backAcceleration
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4874daa6d273c1149bcd0f7b634f63b7, type: 3}
