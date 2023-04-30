@@ -26,6 +26,12 @@ namespace _Game.Scripts {
 
         public Player Player { get; private set; }
 
+        [Header("Orders")]
+        private float _multiplier;
+
+        [Header("Points")]
+        int _score;
+
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
         private Rng _rng;
@@ -43,11 +49,13 @@ namespace _Game.Scripts {
 
         private void Start() {
             _rng = new Rng(Rng.RandomSeed);
+            _score = 0;
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
             _cameraController.Target = Player.transform;
 
             var config = Locator.Instance.Config;
+            _multiplier = config.StartMultiplier;
             _pedestrians = Enumerable.Range(0, config.Population).Select(_ => SpawnPedestrian()).ToList();
             SetTarget();
 
@@ -67,6 +75,8 @@ namespace _Game.Scripts {
             if (pedestrian.IsTarget) {
                 Debug.LogError("Nice!");
                 _patience.Value += config.PatienceOnSuccess;
+                _score += 1;
+                Debug.LogError(_score);
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
@@ -109,7 +119,14 @@ namespace _Game.Scripts {
         }
 
         private void StartTimer() {
-            var duration = Locator.Instance.Config.DefaultTimer;
+            var config = Locator.Instance.Config;
+            float distance = Logic.Distance(_currentTarget.transform.position, Player.transform.position) / 100.0f;
+            var duration =  _timer.Value + config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance;
+            
+            Debug.LogError(distance);
+            Debug.LogError(config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance);
+            if (_multiplier > 0.9f)
+                _multiplier -= config.DeltaMultiplier;
             _timer.Value = duration;
             _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
                 _targetTimer.Load(duration, _timer, _currentTarget.transform);
