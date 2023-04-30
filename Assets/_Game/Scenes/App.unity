@@ -6702,10 +6702,10 @@ MonoBehaviour:
     _patienceOnSuccess: 30
     _patienceOnFail: 50
     _patienceOnMistake: 35
-    _guaranteedTimer: 7
-    _defaultTimer: 4
-    _startMultiplier: 3
-    _deltaMultiplier: 0.5
+    _guaranteedTimer: 8
+    _defaultTimer: 3.5
+    _startMultiplier: 5
+    _deltaMultiplier: 0.6
     _population: 80
     _minSpeed: 2
     _maxSpeed: 7

@@ -32,9 +32,13 @@ namespace _Game.Scripts {
 
         [Header("Orders")]
         private float _multiplier;
+        private float _currentOrderTime;
+        private float _startOrderTime;
 
         [Header("Points")]
-        int _score;
+        private readonly UpdatedValue<int> _score;
+        private readonly UpdatedValue<int> _ordersCompleted;
+        
 
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
@@ -49,9 +53,13 @@ namespace _Game.Scripts {
 
         public GameController() {
             _patience = new UpdatedValue<float>(setter: SetPatience);
+            _ordersCompleted = new UpdatedValue<int>(setter: SetOrdersCompleted);
+            _score = new UpdatedValue<int>(setter: SetScore);
         }
 
         private float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
+        private int SetOrdersCompleted(int value) => value;
+        private int SetScore(int value) => value;
 
         private void Start() {
             _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevel);
@@ -61,7 +69,9 @@ namespace _Game.Scripts {
             _lost = false;
             _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
-            _score = 0;
+            _ordersCompleted.Value = 0;
+            _score.Value = 0;
+            _timer.Value = 0;
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
             _cameraController.Target = Player.transform;
@@ -105,6 +115,14 @@ namespace _Game.Scripts {
             EndLevel(() => _mainMenu.Show());
         }
 
+        private void UpdateOrdersCompleted() {
+            _ordersCompleted.Value += 1;
+        }
+
+        private void UpdateScore(int delta) {
+            _score.Value += delta;
+        }
+
         private void OnPedestrianCollision(Pedestrian pedestrian) {
             pedestrian.OnCollision.Unsubscribe(OnPedestrianCollision);
             pedestrian.Kill();
@@ -114,9 +132,11 @@ namespace _Game.Scripts {
             var config = Locator.Instance.Config;
             if (pedestrian.IsTarget) {
                 Debug.LogError("Nice!");
+                UpdateOrdersCompleted();
+                UpdateScore((150 - Convert.ToInt32(100 * Mathf.Min((_startOrderTime - _timer.Value) / _currentOrderTime, 1))) * (_patience.Value == 100 ? 2 : 1));
+                Debug.LogError(_ordersCompleted.Value);
+                Debug.LogError(_score.Value);
                 _patience.Value += config.PatienceOnSuccess;
-                _score += 1;
-                Debug.LogError(_score);
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
@@ -175,10 +195,12 @@ namespace _Game.Scripts {
         private void StartTimer() {
             var config = Locator.Instance.Config;
             var distance = Logic.Distance(_currentTarget.transform.position, Player.transform.position) / 100.0f;
-            var duration =  _timer.Value + config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance;
+            _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance;
+            var duration =  _timer.Value + _currentOrderTime;
+            _startOrderTime = duration;
 
             Debug.Log(distance);
-            Debug.Log(config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance);
+            Debug.Log(_currentOrderTime);
             if (_multiplier > 0.9f) {
                 _multiplier -= config.DeltaMultiplier;
             }
