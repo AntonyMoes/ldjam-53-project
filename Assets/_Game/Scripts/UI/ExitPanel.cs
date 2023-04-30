@@ -26,6 +26,19 @@ namespace _Game.Scripts.UI {
             _restartButton.OnClick.Subscribe(OnRestartClick);
             _continueButton.OnClick.Subscribe(OnContinueClick);
             _mainMenuButton.OnClick.Subscribe(OnMainMenuClick);
+
+            var timeScale = Time.timeScale;
+            OnShown.Subscribe(() => {
+                if (!Lost) {
+                    timeScale = Time.timeScale;
+                    Time.timeScale = 0f;
+                }
+            });
+            OnHiding.Subscribe(() => {
+                if (!Lost) {
+                    Time.timeScale = timeScale;
+                }
+            });
         }
 
         public void Load(Action endLevel, Action restartLevel = null) {

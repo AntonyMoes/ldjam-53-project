@@ -1,19 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
+using _Game.Scripts.Objects.Pedestrian;
 using GeneralUtils;
 using UnityEngine;
 
 namespace _Game.Scripts {
     public class DitheringController {
         private readonly Player _player;
+        private readonly UpdatedValue<Pedestrian> _target;
         private readonly Camera _checkCamera;
 
         private readonly List<Building> _ditheredBuildings = new List<Building>();
         private readonly RaycastHit[] _hitBuffer = new RaycastHit[5];
 
-        public DitheringController(Player player, Camera checkCamera) {
+
+        public DitheringController(Player player, UpdatedValue<Pedestrian> target, Camera checkCamera) {
             _player = player;
+            _target = target;
             _checkCamera = checkCamera;
         }
 
@@ -22,7 +26,8 @@ namespace _Game.Scripts {
                 return;
             }
 
-            var newDitheredBuildings = _player.DitherCheckPoints
+            var newDitheredBuildings =
+                (_target.Value == null ? _player.DitherCheckPoints : _player.DitherCheckPoints.Append(_target.Value.transform))
                 .Select(CheckPoint)
                 .SelectMany(x => x)
                 .ToHashSet();

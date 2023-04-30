@@ -24,21 +24,18 @@ namespace _Game.Scripts {
         [SerializeField] private Transform _pedestrianParent;
         [SerializeField] private MeshCollider _mapPlane;
 
+        public Player Player { get; private set; }
+
         private MainMenuWindow _mainMenu;
         private GameUIPanel _gameUIPanel;
         private ExitPanel _exitPanel;
 
-        public Player Player { get; private set; }
-
-        [Header("Orders")]
         private float _multiplier;
         private float _currentOrderTime;
         private float _startOrderTime;
 
-        [Header("Points")]
         private readonly UpdatedValue<int> _score;
         private readonly UpdatedValue<int> _ordersCompleted;
-        
 
         private readonly UpdatedValue<float> _patience;
         private List<Pedestrian> _pedestrians;
@@ -46,20 +43,18 @@ namespace _Game.Scripts {
 
         private bool LevelInProgress => _map.activeSelf;
         private readonly UpdatedValue<float> _timer = new UpdatedValue<float>();
-        private Pedestrian _currentTarget;
+        private readonly UpdatedValue<Pedestrian> _currentTarget = new UpdatedValue<Pedestrian>();
         private Tween _timerTween;
         private DitheringController _ditheringController;
         private bool _lost;
 
         public GameController() {
             _patience = new UpdatedValue<float>(setter: SetPatience);
-            _ordersCompleted = new UpdatedValue<int>(setter: SetOrdersCompleted);
-            _score = new UpdatedValue<int>(setter: SetScore);
+            _ordersCompleted = new UpdatedValue<int>();
+            _score = new UpdatedValue<int>();
         }
 
-        private float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
-        private int SetOrdersCompleted(int value) => value;
-        private int SetScore(int value) => value;
+        private static float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
 
         private void Start() {
             _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevel);
@@ -75,7 +70,7 @@ namespace _Game.Scripts {
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
             _cameraController.Target = Player;
-            _ditheringController = new DitheringController(Player, Locator.Instance.MainCamera);
+            _ditheringController = new DitheringController(Player, _currentTarget, Locator.Instance.MainCamera);
 
             var config = Locator.Instance.Config;
             _multiplier = config.StartMultiplier;
@@ -178,17 +173,17 @@ namespace _Game.Scripts {
 
         private void SetTarget() {
             StopTimer();
-            if (_currentTarget != null) {
-                _currentTarget.IsTarget = false;
-                _currentTarget = null;
+            if (_currentTarget.Value != null) {
+                _currentTarget.Value .IsTarget = false;
+                _currentTarget.Value  = null;
             }
 
             if (_pedestrians.Count == 0) {
                 return;
             }
 
-            _currentTarget = _rng.NextChoice(_pedestrians);
-            _currentTarget.IsTarget = true;
+            _currentTarget.Value  = _rng.NextChoice(_pedestrians);
+            _currentTarget.Value .IsTarget = true;
             StartTimer();
         }
 
@@ -197,7 +192,8 @@ namespace _Game.Scripts {
             const float multiplierThreshold = 0.9f;
             var config = Locator.Instance.Config;
 
-            var targetPosition = (_currentTarget.transform.position + _currentTarget.Destination) / 2f;
+            var target = _currentTarget.Value;
+            var targetPosition = (target.transform.position + target.Destination) / 2f;
             var distance = Logic.Distance(targetPosition, Player.transform.position) / timerDistanceMultiplier;
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance;
             var duration =  _timer.Value + _currentOrderTime;
@@ -211,7 +207,7 @@ namespace _Game.Scripts {
 
             _timer.Value = duration;
             _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
-                _targetTimer.Load(duration, _timer, _currentTarget.transform);
+                _targetTimer.Load(duration, _timer, target.transform);
                 _targetTimer.Show();
             });
             _timerTween = DOVirtual

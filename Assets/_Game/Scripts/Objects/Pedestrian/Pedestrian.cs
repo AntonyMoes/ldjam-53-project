@@ -36,7 +36,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         private Tween _destructionAnimation;
 
         public Pedestrian() {
-            OnCollision = new GeneralUtils.Event<Pedestrian>(out _onCollision);
+            OnCollision = new Event<Pedestrian>(out _onCollision);
         }
 
         private void OnCollisionEnter(Collision collision) {
