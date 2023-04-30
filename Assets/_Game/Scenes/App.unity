@@ -6888,12 +6888,14 @@ MonoBehaviour:
     _patienceOnFail: 50
     _patienceOnMistake: 35
     _guaranteedTimer: 8
-    _defaultTimer: 3.5
-    _startMultiplier: 5
+    _defaultTimer: 3.4
+    _startMultiplier: 4.9
     _deltaMultiplier: 0.6
     _population: 80
     _minSpeed: 2
     _maxSpeed: 7
+    _deltaSpeed: 1
+    _deltaPointsForSpeedUp: 250
     _evadeRadius: 7
     _bewareRadius: 20
     _bewareSpeedModifier: 0.6

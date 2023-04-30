@@ -44,6 +44,12 @@ namespace _Game.Scripts {
         [SerializeField] private float _maxSpeed;
         public float MaxSpeed => _maxSpeed;
 
+        [SerializeField] private float _deltaSpeed;
+        public float DeltaSpeed => _deltaSpeed;
+
+        [SerializeField] private int _deltaPointsForSpeedUp;
+        public int DeltaPointsForSpeedUp => _deltaPointsForSpeedUp;
+
         [SerializeField] private float _evadeRadius;
         public float EvadeRadius => _evadeRadius;
 
