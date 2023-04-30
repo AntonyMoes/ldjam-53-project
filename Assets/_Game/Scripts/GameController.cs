@@ -168,13 +168,15 @@ namespace _Game.Scripts {
 
         private void StartTimer() {
             var config = Locator.Instance.Config;
-            float distance = Logic.Distance(_currentTarget.transform.position, Player.transform.position) / 100.0f;
+            var distance = Logic.Distance(_currentTarget.transform.position, Player.transform.position) / 100.0f;
             var duration =  _timer.Value + config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance;
-            
-            Debug.LogError(distance);
-            Debug.LogError(config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance);
-            if (_multiplier > 0.9f)
+
+            Debug.Log(distance);
+            Debug.Log(config.GuaranteedTimer + _multiplier  * config.DefaultTimer * distance);
+            if (_multiplier > 0.9f) {
                 _multiplier -= config.DeltaMultiplier;
+            }
+
             _timer.Value = duration;
             _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
                 _targetTimer.Load(duration, _timer, _currentTarget.transform);
