@@ -1,4 +1,5 @@
 ﻿using System;
+using GeneralUtils;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,7 +9,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         private Vector3 _savedPosition;
         private float _lastDistanceToPlayer;
 
-        public EvadeState(NavMeshAgent agent, float speed, Func<Vector3, Vector3> getClosestAvailablePosition) : base(agent, speed) {
+        public EvadeState(NavMeshAgent agent, UpdatedValue<float> speed, Func<Vector3, Vector3> getClosestAvailablePosition) : base(agent, speed) {
             _getClosestAvailablePosition = getClosestAvailablePosition;
         }
 
@@ -40,6 +41,10 @@ namespace _Game.Scripts.Objects.Pedestrian {
         public override void OnStateExit() {
             if (Agent.isOnNavMesh)
                 Agent.destination = _savedPosition;
+        }
+
+        protected override void OnSpeedChanged(float newSpeed) {
+            Agent.speed = newSpeed;
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using DG.Tweening;
+using GeneralUtils;
 using GeneralUtils.States;
 using UnityEngine;
 using UnityEngine.AI;
@@ -28,6 +29,8 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
         }
 
+        public readonly UpdatedValue<float> Speed = new UpdatedValue<float>();
+
         private readonly StateMachine<PedestrianState> _stateMachine = new StateMachine<PedestrianState>();
         private bool _killed;
         private Tween _destructionAnimation;
@@ -46,12 +49,13 @@ namespace _Game.Scripts.Objects.Pedestrian {
         }
 
         public void Setup(float speed, Vector3 startPosition, Func<Vector3> getNextPosition, Func<Vector3, Vector3> getClosestAvailablePosition) {
+            Speed.Value = speed;
             transform.position = startPosition;
             _rb.useGravity = false;
 
-            _stateMachine.AddState(PedestrianState.Walk, new WalkState(_agent, speed, getNextPosition));
-            _stateMachine.AddState(PedestrianState.Beware, new BewareState(_agent, speed, getNextPosition));
-            _stateMachine.AddState(PedestrianState.Evade, new EvadeState(_agent, speed, getClosestAvailablePosition));
+            _stateMachine.AddState(PedestrianState.Walk, new WalkState(_agent, Speed, getNextPosition));
+            _stateMachine.AddState(PedestrianState.Beware, new BewareState(_agent, Speed, getNextPosition));
+            _stateMachine.AddState(PedestrianState.Evade, new EvadeState(_agent, Speed, getClosestAvailablePosition));
             _stateMachine.SetDefaultState(PedestrianState.Walk);
             _stateMachine.Start();
         }

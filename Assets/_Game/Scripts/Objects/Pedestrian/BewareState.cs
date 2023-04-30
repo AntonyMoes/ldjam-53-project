@@ -1,4 +1,5 @@
 ﻿using System;
+using GeneralUtils;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,7 +7,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
     public class BewareState : BasePedestrianState {
         private readonly Func<Vector3> _getNextPosition;
 
-        public BewareState(NavMeshAgent agent, float speed, Func<Vector3> getNextPosition) : base(agent, speed) {
+        public BewareState(NavMeshAgent agent, UpdatedValue<float> speed, Func<Vector3> getNextPosition) : base(agent, speed) {
             _getNextPosition = getNextPosition;
         }
 
@@ -26,12 +27,12 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
 
             Agent.speed = GoingInPlayerDirection()
-                ? Speed * Locator.Instance.Config.BewareSpeedModifier
-                : Speed;
+                ? Speed.Value * Locator.Instance.Config.BewareSpeedModifier
+                : Speed.Value;
         }
 
         public override void OnStateExit() {
-            Agent.speed = Speed;
+            Agent.speed = Speed.Value;
         }
 
         private bool GoingInPlayerDirection() {
