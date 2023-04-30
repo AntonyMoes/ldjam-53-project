@@ -10,6 +10,7 @@ namespace _Game.Scripts.UI {
         [SerializeField] private TextMeshProUGUI _label;
         [SerializeField] private ProgressBar _bar;
         [SerializeField] private Vector2 _edgeOffset;
+        [SerializeField] private RectTransform _arrow;
 
         private UpdatedValue<float> _timerValue;
         private Transform _target;
@@ -42,7 +43,16 @@ namespace _Game.Scripts.UI {
             var maxPos = canvasSize * 0.5f - rect.sizeDelta * 0.5f - _edgeOffset;
             var centerX = Mathf.Sign(timerCenterPosition.x) * Mathf.Clamp(Mathf.Abs(timerCenterPosition.x), 0, maxPos.x);
             var centerY = Mathf.Sign(timerCenterPosition.y) * Mathf.Clamp(Mathf.Abs(timerCenterPosition.y), 0, maxPos.y);
-            rect.anchoredPosition = CenteredToAnchored(rect, canvasSize, new Vector2(centerX, centerY));
+            var clampedCenterPosition = new Vector2(centerX, centerY);
+            rect.anchoredPosition = CenteredToAnchored(rect, canvasSize, clampedCenterPosition);
+
+            var showArrow = /*flippedPoint.x < 0 || flippedPoint.x > 1 || flippedPoint.y < 0 || flippedPoint.y > 1;*/ timerCenterPosition != clampedCenterPosition;
+            _arrow.gameObject.SetActive(showArrow);
+
+            var pivotPoint = timerCenterPosition + rect.sizeDelta * (rect.pivot - Vector2.one * 0.5f);
+            var direction = (pivotPoint - clampedCenterPosition).normalized;
+            var angle = Vector2.SignedAngle(Vector2.up, direction);
+            _arrow.rotation = Quaternion.Euler(0, 0, angle);
         }
 
         private static Vector2 AnchoredToCentered(RectTransform rect, Vector2 parentSize, Vector2 position) {

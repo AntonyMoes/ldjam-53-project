@@ -1666,6 +1666,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _delta: {x: 0, y: 31.025, z: -23}
+  _smoothSpeed: 0.3
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -1689,7 +1690,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
+  near clip plane: 10
   far clip plane: 1000
   field of view: 47.3
   orthographic: 0
@@ -7213,6 +7214,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 215032966}
     m_Modifications:
+    - target: {fileID: 5068211795899849734, guid: 11054639d04a18240bdb7fb5f6a558df, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.30000305
+      objectReference: {fileID: 0}
     - target: {fileID: 5839566540305546608, guid: 11054639d04a18240bdb7fb5f6a558df, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

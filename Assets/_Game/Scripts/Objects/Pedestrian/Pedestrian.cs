@@ -17,6 +17,8 @@ namespace _Game.Scripts.Objects.Pedestrian {
         private readonly Action<Pedestrian> _onCollision;
         public GeneralUtils.Event<Pedestrian> OnCollision { get; }
 
+        public Vector3 Destination => _agent.destination;
+
         private bool _isTarget;
         public bool IsTarget {
             get => _isTarget;

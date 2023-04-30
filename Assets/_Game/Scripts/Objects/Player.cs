@@ -4,6 +4,7 @@ using UnityEngine;
 namespace _Game.Scripts.Objects {
     public class Player : MonoBehaviour {
         [SerializeField] private Rigidbody _rb;
+        [SerializeField] private Transform _lookPoint;
         [SerializeField] private Transform[] _ditherCheckPoints;
         public Transform[] DitherCheckPoints => _ditherCheckPoints;
 
@@ -18,6 +19,13 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private float _maxBackVelocity;
 
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
+
+        public Transform LookPoint {
+            get {
+                _lookPoint.position = transform.position + transform.forward * (CurrentVelocity * 0.4f);
+                return _lookPoint;
+            }
+        }
 
         private void FixedUpdate() {
             var vertical = Input.GetAxis("Vertical");

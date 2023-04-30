@@ -74,7 +74,7 @@ namespace _Game.Scripts {
             _timer.Value = 0;
 
             Player = Instantiate(_playerPrefab, _playerSpawn);
-            _cameraController.Target = Player.transform;
+            _cameraController.Target = Player;
             _ditheringController = new DitheringController(Player, Locator.Instance.MainCamera);
 
             var config = Locator.Instance.Config;
@@ -193,15 +193,19 @@ namespace _Game.Scripts {
         }
 
         private void StartTimer() {
+            const float timerDistanceMultiplier = 100f;
+            const float multiplierThreshold = 0.9f;
             var config = Locator.Instance.Config;
-            var distance = Logic.Distance(_currentTarget.transform.position, Player.transform.position) / 100.0f;
+
+            var targetPosition = (_currentTarget.transform.position + _currentTarget.Destination) / 2f;
+            var distance = Logic.Distance(targetPosition, Player.transform.position) / timerDistanceMultiplier;
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance;
             var duration =  _timer.Value + _currentOrderTime;
             _startOrderTime = duration;
 
             Debug.Log(distance);
             Debug.Log(_currentOrderTime);
-            if (_multiplier > 0.9f) {
+            if (_multiplier > multiplierThreshold) {
                 _multiplier -= config.DeltaMultiplier;
             }
 
