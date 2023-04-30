@@ -57,6 +57,7 @@ namespace _Game.Scripts {
         }
 
         private void StartLevel() {
+            _lost = false;
             _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
             _score = 0;
