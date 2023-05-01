@@ -23,6 +23,7 @@ namespace _Game.Scripts {
         [SerializeField] private Pedestrian _pedestrianPrefab;
         [SerializeField] private Transform _pedestrianParent;
         [SerializeField] private MeshCollider _mapPlane;
+        [SerializeField] private Goddess _goddess;
 
         public Player Player { get; private set; }
 
@@ -171,6 +172,7 @@ namespace _Game.Scripts {
 
             var config = Locator.Instance.Config;
             if (pedestrian.IsTarget) {
+                _goddess.SetState(Goddess.State.Happy);
                 Debug.LogError("Nice!");
                 UpdateOrdersCompleted();
                 int score = _score.Value;
@@ -184,6 +186,7 @@ namespace _Game.Scripts {
                 _patience.Value += config.PatienceOnSuccess;
                 SetTarget();
             } else {
+                _goddess.SetState(Goddess.State.Angry);
                 Debug.LogError("Wrong!");
                 SoundController.Instance.PlaySound("sfx_mistake", 1f);
                 _patience.Value -= config.PatienceOnMistake;
@@ -198,6 +201,7 @@ namespace _Game.Scripts {
 
         private void OnTimerEnd() {
             Debug.LogError("Late!");
+            _goddess.SetState(Goddess.State.Angry);
             SoundController.Instance.PlaySound("sfx_mistake", 1f);
             _patience.Value -= Locator.Instance.Config.PatienceOnFail;
 
@@ -296,8 +300,8 @@ namespace _Game.Scripts {
 
             var position = GetRandomNavMeshPosition();
             var config = Locator.Instance.Config;
-            var speed = _rng.NextFloat(config.MinSpeed, config.MaxSpeed) + config.DeltaSpeed * (float)(_score.Value / config.DeltaPointsForSpeedUp);
-            pedestrian.Setup(speed, position, GetRandomNavMeshPosition, pos => GetClosestAvailablePosition(pos, true)!.Value);
+            var speed = _rng.NextFloat(config.MinSpeed, config.MaxSpeed) + config.DeltaSpeed * (_score.Value / config.DeltaPointsForSpeedUp);
+            pedestrian.Setup(speed, Player.MaxSpeed - 1, position, GetRandomNavMeshPosition, pos => GetClosestAvailablePosition(pos, true)!.Value);
             pedestrian.OnCollision.Subscribe(OnPedestrianCollision);
             return pedestrian;
         }

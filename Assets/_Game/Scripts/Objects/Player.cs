@@ -25,6 +25,8 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private float _maxVelocity;
         [SerializeField] private float _maxBackVelocity;
 
+        public float MaxSpeed => _maxVelocity;
+
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
         private readonly Dictionary<string, AudioSource> _sounds = new Dictionary<string, AudioSource>();
         private float _lastVertical = 0;
@@ -158,16 +160,13 @@ namespace _Game.Scripts.Objects {
 
         private void UpdateVelocity(float acceleration, float brake, float steering, float deltaTime) {
             if (CurrentVelocity != 0 && steering != 0) {
-                // Debug.Log($"Vel: {CurrentVelocity}, Steer: {steering}");
                 var radius = Mathf.Abs(CurrentVelocity) / _maxVelocity * (_maxSteerRadius - _minSteerRadius) + _minSteerRadius;
                 var circumference = radius * 2 * Mathf.PI;
-                var angles = CurrentVelocity * deltaTime / circumference * 360;
-                // Debug.Log($"Rad: {radius}, Ang: {angles}");
-                _rb.rotation *= Quaternion.Euler(0, angles * Mathf.Sign(steering), 0);
-                // _rb.rotation 
+                var angle = CurrentVelocity * deltaTime / circumference * 360;
+                var adjustedAngle = angle * Mathf.Sign(steering);
+                _rb.rotation *= Quaternion.Euler(0, adjustedAngle, 0);
             }
 
-            // Debug.Log($"Acc: {acceleration}, Br: {brake}");
             var delta = (acceleration + brake) * deltaTime;
             if (delta == 0) {
                 delta = -Mathf.Sign(CurrentVelocity) * Mathf.Min(Mathf.Abs(CurrentVelocity), _deceleration * deltaTime);

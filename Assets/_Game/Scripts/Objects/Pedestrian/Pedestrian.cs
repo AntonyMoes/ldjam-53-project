@@ -17,7 +17,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         [SerializeField] private Transform _vfx;
 
         private readonly Action<Pedestrian> _onCollision;
-        public GeneralUtils.Event<Pedestrian> OnCollision { get; }
+        public Event<Pedestrian> OnCollision { get; }
 
         public Vector3 Destination => _agent.destination;
 
@@ -30,8 +30,9 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
         }
 
-        public readonly UpdatedValue<float> Speed = new UpdatedValue<float>();
+        public readonly UpdatedValue<float> Speed = new UpdatedValue<float>(setter: SetSpeed);
 
+        private static float _maxSpeed;
         private readonly StateMachine<PedestrianState> _stateMachine = new StateMachine<PedestrianState>();
         private bool _killed;
         private Tween _destructionAnimation;
@@ -49,7 +50,8 @@ namespace _Game.Scripts.Objects.Pedestrian {
             Physics.IgnoreCollision(collision.collider, _collider);
         }
 
-        public void Setup(float speed, Vector3 startPosition, Func<Vector3> getNextPosition, Func<Vector3, Vector3> getClosestAvailablePosition) {
+        public void Setup(float speed, float maxSpeed, Vector3 startPosition, Func<Vector3> getNextPosition, Func<Vector3, Vector3> getClosestAvailablePosition) {
+            _maxSpeed = maxSpeed;
             Speed.Value = speed;
             transform.position = startPosition;
             _rb.useGravity = false;
@@ -59,6 +61,10 @@ namespace _Game.Scripts.Objects.Pedestrian {
             _stateMachine.AddState(PedestrianState.Evade, new EvadeState(_agent, Speed, getClosestAvailablePosition));
             _stateMachine.SetDefaultState(PedestrianState.Walk);
             _stateMachine.Start();
+        }
+
+        private static float SetSpeed(float speed) {
+            return Mathf.Min(speed, _maxSpeed);
         }
 
         public void Kill(bool immediate = false) {
