@@ -51,6 +51,7 @@ namespace _Game.Scripts {
         private DitheringController _ditheringController;
         private readonly Dictionary<GameObject, float> _objectsToDelete = new Dictionary<GameObject, float>();
         private bool _lost;
+        private bool _firstMisson;
 
         public GameController() {
             _patience = new UpdatedValue<float>(setter: SetPatience);
@@ -100,6 +101,7 @@ namespace _Game.Scripts {
         private void StartLevel() {
             _goddess.SetState(Goddess.State.Idle);
             _lost = false;
+            _firstMisson = true;
             _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
             _ordersCompleted.Value = 0;
@@ -268,6 +270,10 @@ namespace _Game.Scripts {
             var bonus = GetBonusMultiplier();
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance + config.BonusTimer * bonus;
             var duration =  _timer.Value + _currentOrderTime;
+            if (_firstMisson) {
+                duration = Mathf.Max(25f, duration);
+                _firstMisson = false;
+            }
             _startOrderTime = duration;
 
             Debug.Log(distance);
