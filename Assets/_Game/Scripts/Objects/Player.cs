@@ -10,6 +10,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Transform _lookPoint;
         [SerializeField] private Transform[] _ditherCheckPoints;
+        [SerializeField] private MonoBehaviour _smoke;
         public Transform[] DitherCheckPoints => _ditherCheckPoints;
 
         [Header("Parameters")]
@@ -23,6 +24,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private float _maxBackVelocity;
 
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
+        public MonoBehaviour Smoke { get; private set; }
         private readonly Dictionary<string, AudioSource> _sounds = new Dictionary<string, AudioSource>();
         private float lastVertical = 0;
         private float lastHorizontal = 0;
@@ -32,6 +34,10 @@ namespace _Game.Scripts.Objects {
                 _lookPoint.position = transform.position + transform.forward * (CurrentVelocity * 0.4f);
                 return _lookPoint;
             }
+        }
+
+        private void OnAwake() {
+            Smoke = Instantiate(_smoke, _lookPoint);
         }
 
         private void OnDestroy() { // kappa 2
