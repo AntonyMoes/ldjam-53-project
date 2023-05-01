@@ -274,7 +274,7 @@ MonoBehaviour:
   _deceleration: 5
   _minSteerRadius: 4
   _maxSteerRadius: 10
-  _maxVelocity: 16
+  _maxVelocity: 16.1
   _maxBackVelocity: 6
 --- !u!1 &1438414548160601933
 GameObject:

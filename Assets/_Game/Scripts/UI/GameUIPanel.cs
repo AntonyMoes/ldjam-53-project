@@ -1,27 +1,35 @@
 ﻿using System;
+using System.Linq;
 using _Game.Scripts.UI.Base;
 using DG.Tweening;
 using GeneralUtils;
 using GeneralUtils.UI;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace _Game.Scripts.UI {
     public class GameUIPanel : UIElement {
         [SerializeField] private RectTransform _characterPanel;
         [SerializeField] private ProgressBar _patienceProgressBar;
         [SerializeField] private TargetTimer _targetTimer;
+        [SerializeField] private TextAsset _isekaiNamesFile;
         public TargetTimer TargetTimer => _targetTimer;
 
         [Header("Kills")]
         [SerializeField] private Color _flashColor;
         [SerializeField] private RectTransform _killsPanel;
         [SerializeField] private TextMeshProUGUI _killsLabel;
+        [SerializeField] private RectTransform _ticket;
+        [SerializeField] private TextMeshProUGUI _ticketText;
+        [SerializeField] private Vector2 _ticketShownPosition;
 
         [Header("Score")]
         [SerializeField] private RectTransform _scorePanel;
         [SerializeField] private TextMeshProUGUI _scoreLabel;
 
+        private Rng _rng;
+        private string[][] _isekaiNames;
         private UpdatedValue<float> _patience;
         private UpdatedValue<int> _kills;
         private UpdatedValue<int> _score;
@@ -30,6 +38,19 @@ namespace _Game.Scripts.UI {
         private Tween _killsAnimation;
         private Tween _scoreAnimation;
         private Tween _panelAnimation;
+
+        protected override void Init() {
+            _rng = new Rng(Rng.RandomSeed);
+            _isekaiNames = _isekaiNamesFile.text
+                .Replace("\r", "")
+                .Split('\n')
+                .Where(line => !string.IsNullOrEmpty(line))
+                .Select(line => line
+                    .Split(',')
+                    .Where(name => !string.IsNullOrEmpty(name))
+                    .ToArray())
+                .ToArray();
+        }
 
         public void Load(UpdatedValue<float> patience, float maxPatience, UpdatedValue<int> kills, UpdatedValue<int> score) {
             _patienceProgressBar.Load(0, maxPatience);
@@ -59,12 +80,17 @@ namespace _Game.Scripts.UI {
             _killsAnimation?.Complete(true);
 
             _killsLabel.text = value.ToString();
+            _ticketText.text = string.Join(" ", _isekaiNames.Select(options => _rng.NextChoice(options)));
+            _ticket.anchoredPosition = Vector2.zero;
 
-            const float duration = 0.13f;
+            const float duration = 0.15f;
+            const float ticketDuration = 2f;
             var original = _killsLabel.color;
             _killsAnimation = DOTween.Sequence()
                 .Append(_killsLabel.DOColor(_flashColor, duration).SetEase(Ease.OutSine))
-                .Append(_killsLabel.DOColor(original, duration).SetEase(Ease.InSine));
+                .Append(_killsLabel.DOColor(original, duration).SetEase(Ease.InSine))
+                .Insert(0f, _ticket.DOAnchorPos(_ticketShownPosition, ticketDuration / 2f).SetEase(Ease.Linear))
+                .Insert(ticketDuration * 5f / 6f, _ticket.DOAnchorPos(Vector2.zero, ticketDuration / 6f).SetEase(Ease.InSine));
         }
 
         private void OnScoreUpdate(int value) {
