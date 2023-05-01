@@ -352,8 +352,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Afraid of death, you didn't really have much of a choice. And so began
-    your new life as a delivery boy of a particulary demanding employer.
+  m_text: Afraid of death, you didn't have much of a choice. And so began your new
+    life as a delivery boy for a particulary demanding employer.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
   m_sharedMaterial: {fileID: -3179239096878061223, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
@@ -821,8 +821,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -491, y: 306}
-  m_SizeDelta: {x: 1238.572, y: 475.4951}
+  m_AnchoredPosition: {x: -488.97583, y: 306}
+  m_SizeDelta: {x: 1242.6204, y: 475.4951}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1924433771956467080
 CanvasRenderer:
@@ -946,8 +946,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -73.92624, y: -52.240875}
-  m_SizeDelta: {x: -284.1828, y: -186.09662}
+  m_AnchoredPosition: {x: -65, y: -54}
+  m_SizeDelta: {x: -326.688, y: -186.0966}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5503308650257975143
 CanvasRenderer:
@@ -977,9 +977,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: But you were very lucky to receive an offer from the goddess of an another
-    world. She would heal you, but she would use your services as a truck driver
-    to send more people to the afterlife to be reborn in her world as heroes.
+  m_text: But you were lucky to receive an offer from the goddess of another world.
+    She would heal you, but she would use your services as a truck driver to send
+    more people to the afterlife to be reborn in her world as heroes.
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
   m_sharedMaterial: {fileID: -3179239096878061223, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
