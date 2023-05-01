@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using UnityEngine.VFX;
 
 namespace _Game.Scripts.Objects {
     public class Player : MonoBehaviour {
@@ -12,6 +13,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Transform[] _ditherCheckPoints;
         public Transform[] DitherCheckPoints => _ditherCheckPoints;
         [SerializeField] private Transform _vfx;
+        [SerializeField] private VisualEffect _smoke;
 
         [Header("Parameters")]
         [SerializeField] private float _acceleration;
@@ -97,28 +99,25 @@ namespace _Game.Scripts.Objects {
             if (vertical != 0 && _lastVertical == 0) {
                 TurnSoundOn("pressW", 0.4f, reset: true);
             }
-            else {
-                // TurnSoundOff("pressW");
-            }
 
             if (vertical != 0 || CurrentVelocity != 0) {
                 TurnSoundOn("holdingW", 5.6f, true);
-            }
-            else {
+            } else {
                 TurnSoundOff("holdingW");
             }
 
-            // if (vertical * CurrentVelocity < 0 && lastVertical * CurrentVelocity >= 0) {
             if (Mathf.Abs(brake) > 0) {
                 TurnSoundOn("brake2", 0.6f, false);
-            }
-            else 
-            {
+            } else {
                 TurnSoundOff("brake2");
             }
-            
+
             UpdateVelocity(acceleration, brake, horizontal, Time.fixedDeltaTime);
             _lastVertical = vertical;
+
+            var directionMultiplier = CurrentVelocity < 0f ? 0.3f : 1f;
+            var power = Mathf.Clamp(Mathf.Abs(CurrentVelocity) / _maxVelocity * directionMultiplier, 0.05f, 1f);
+            _smoke.SetFloat("POWER", power);
         }
 
         private void OnDrawGizmos() {
