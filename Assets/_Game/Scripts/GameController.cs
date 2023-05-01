@@ -49,6 +49,7 @@ namespace _Game.Scripts {
         private DitheringController _ditheringController;
         private readonly Dictionary<GameObject, float> _objectsToDelete = new Dictionary<GameObject, float>();
         private bool _lost;
+        private bool _firstMisson;
 
         public GameController() {
             _patience = new UpdatedValue<float>(setter: SetPatience);
@@ -92,6 +93,7 @@ namespace _Game.Scripts {
 
         private void StartLevel() {
             _lost = false;
+            _firstMisson = true;
             _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
             _ordersCompleted.Value = 0;
@@ -254,6 +256,10 @@ namespace _Game.Scripts {
             var distance = Logic.Distance(targetPosition, Player.transform.position) / timerDistanceMultiplier;
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance;
             var duration =  _timer.Value + _currentOrderTime;
+            if (_firstMisson) {
+                duration = Mathf.Max(25f, duration);
+                _firstMisson = false;
+            }
             _startOrderTime = duration;
 
             Debug.Log(distance);
