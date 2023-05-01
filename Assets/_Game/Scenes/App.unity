@@ -3763,10 +3763,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1938136517234152670, guid: 80a5c2e119632bd46a57e138152de9c1, type: 3}
-      propertyPath: _slides.Array.size
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1938136517894171291, guid: 80a5c2e119632bd46a57e138152de9c1, type: 3}
       propertyPath: m_Color.a
       value: 0

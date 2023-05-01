@@ -8,6 +8,7 @@ namespace _Game.Scripts.UI {
         [SerializeField] private CanvasGroup[] _slides;
         [SerializeField] private Button _nextSlideButton;
         [SerializeField] private CanvasGroup _slidesGroup;
+        [SerializeField] private CanvasGroup _loadingScreen;
 
         private int _currentSlideIdx;
         private CanvasGroup CurrentSlide => _slides[_currentSlideIdx];
@@ -24,16 +25,29 @@ namespace _Game.Scripts.UI {
                 slide.gameObject.SetActive(false);
             }
 
-            if (!HasCurrent && !HasNext) {
-                onDone?.Invoke();
-                Hide();
-                return;
-            }
+            _loadingScreen.alpha = 1f;
+            _loadingScreen.gameObject.SetActive(true);
 
-            ShowNextSlide(onDone);
+            var hasNext = HasNext;
+            DOTween.Sequence()
+                .AppendCallback(() => {
+                    if (hasNext) {
+                        ShowNextSlide();
+                    }
+                })
+                .AppendInterval(3f)
+                .Append(_loadingScreen.DOFade(0f, 0.5f))
+                .OnComplete(() => {
+                    _loadingScreen.gameObject.SetActive(false);
+                    _loadingScreen.alpha = 1f;
+                    onDone?.Invoke();
+                    if (!hasNext) {
+                        Hide();
+                    }
+                });
         }
 
-        public void NextSlide() {
+        private void NextSlide() {
             if (!HasNext) {
                 Hide();
                 return;
@@ -43,37 +57,29 @@ namespace _Game.Scripts.UI {
         }
 
         private void ShowNextSlide(Action onDone = null) {
-            const float duration = 0.8f;
+            const float duration = 0.5f;
 
             _nextSlideButton.enabled = false;
-
-            var sequence = DOTween.Sequence();
-            if (HasCurrent) {
-                var current = CurrentSlide;
-                sequence.Append(DOTween.Sequence()
-                    .Insert(0, current.DOFade(0, duration / 2f))
-                    .Insert(0, _slidesGroup.DOFade(0, duration / 2f)));
-                sequence.AppendCallback(() => {
-                    current.gameObject.SetActive(false);
-                    current.alpha = 1f;
-                });
-            }
-
+            var hasCurrent = HasCurrent;
             var hasNext = HasNext;
             _currentSlideIdx++;
+
+            var sequence = DOTween.Sequence();
             sequence.AppendCallback(() => {
                 _slidesGroup.alpha = 0f;
             });
 
             if (hasNext) {
+                var insertTime = /*hasCurrent ? duration * 0.25f : */0f;
                 var next = CurrentSlide;
-                sequence.AppendCallback(() => {
+                sequence.InsertCallback(insertTime, () => {
                     next.alpha = 0f;
                     next.gameObject.SetActive(true);
                 });
-                sequence.Append(DOTween.Sequence()
-                    .Insert(0, next.DOFade(1, duration / 2f))
-                    .Insert(0, _slidesGroup.DOFade(1, duration / 2f)));
+                var fadeInDuration = hasCurrent ? duration / 2f : 0f;
+                sequence.Insert(insertTime, DOTween.Sequence()
+                    .Insert(0, next.DOFade(1, fadeInDuration))
+                    .Insert(0, _slidesGroup.DOFade(1, fadeInDuration)));
             }
 
             sequence.OnComplete(() => {

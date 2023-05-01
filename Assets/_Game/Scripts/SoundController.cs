@@ -34,15 +34,15 @@ namespace _Game.Scripts {
 
         public AudioSource PlayMusic(string musicName, float volume = 1f) {
             _musicTween?.Kill();
+            const float fadeDuration = 0.3f;
             if (_music.isPlaying) {
-                const float fadeDuration = 0.3f;
                 _musicTween = DOTween.Sequence()
                     .Append(_music.DOFade(0f, fadeDuration))
                     .AppendCallback(SetNew)
                     .Append(_music.DOFade(volume, fadeDuration));
             } else {
-                _music.volume = volume;
                 SetNew();
+                _music.DOFade(volume, fadeDuration);
             }
 
             return _music;
