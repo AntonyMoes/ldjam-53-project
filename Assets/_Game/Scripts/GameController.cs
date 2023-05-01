@@ -252,12 +252,12 @@ namespace _Game.Scripts {
         private void StartTimer() {
             const float timerDistanceMultiplier = 100f;
             const float multiplierThreshold = 0.9f;
-            const float bonus = 2.0f; // from 0.0f to 2.0f
             var config = Locator.Instance.Config;
 
             var target = _currentTarget.Value;
             var targetPosition = (target.transform.position + target.Destination) / 2f;
             var distance = Logic.Distance(targetPosition, Player.transform.position) / timerDistanceMultiplier;
+            var bonus = GetBonusMultiplier();
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance + config.BonusTimer * bonus;
             var duration =  _timer.Value + _currentOrderTime;
             _startOrderTime = duration;
@@ -282,6 +282,13 @@ namespace _Game.Scripts {
         private void StopTimer() {
             _gameUIPanel.TargetTimer.Hide();
             _timerTween?.Kill();
+        }
+
+        private float GetBonusMultiplier() {
+            var forward = Player.transform.forward;
+            var toTarget = (_currentTarget.Value.transform.position - Player.transform.position).normalized;
+
+            return Vector3.Dot(forward, toTarget) + 1;
         }
 
         private Pedestrian SpawnPedestrian() {
