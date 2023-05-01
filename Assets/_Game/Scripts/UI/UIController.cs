@@ -9,6 +9,7 @@ namespace _Game.Scripts.UI {
         [SerializeField] private CreditsWindow _creditsWindow;
         [SerializeField] private ExitPanel _exitPanel;
         [SerializeField] private GameUIPanel _gameUIPanel;
+        [SerializeField] private SlidesPanel _slidesPanel;
 
         /*[SerializeField] private Transform _hider;
         [SerializeField] private Transform _windows;*/
@@ -37,6 +38,11 @@ namespace _Game.Scripts.UI {
             _gameUIPanel.Load(patience, maxPatience, kills, score);
             _gameUIPanel.Show();
             return _gameUIPanel;
+        }
+
+        public SlidesPanel ShowSlidesPanel() {
+            _slidesPanel.Show();
+            return _slidesPanel;
         }
 
         private void OnCancel() {

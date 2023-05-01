@@ -59,10 +59,15 @@ namespace _Game.Scripts {
         private static float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
 
         private void Start() {
-            _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevelFromMenu);
             _tutorialController.LoadActions(new Dictionary<TutorialController.TutorialAction, Func<Process>> {
                 [TutorialController.TutorialAction.Pause] = () => new AsyncProcess(PauseGame),
                 [TutorialController.TutorialAction.Unpause] = () => new AsyncProcess(UnpauseGame),
+            });
+
+            var ui = UIController.Instance;
+            var slidesPanel = ui.ShowSlidesPanel();
+            slidesPanel.State.WaitFor(UIElement.EState.Hided, () => {
+                _mainMenu = ui.ShowMainMenuWindow(StartLevelFromMenu);
             });
         }
 
