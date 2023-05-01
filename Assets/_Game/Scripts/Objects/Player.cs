@@ -58,6 +58,10 @@ namespace _Game.Scripts.Objects {
         private void TurnSoundOff(string soundName) {
             if (_sounds.ContainsKey(soundName)) {
                 var source = _sounds[soundName];
+                if (source == null) {
+                    return;
+                }
+
                 var shouldStop = source.loop;
                 source.DOFade(0f, .15f).OnComplete(() => {
                     if (shouldStop) {

@@ -98,16 +98,16 @@ namespace _Game.Scripts.UI {
             patienceRect.anchoredPosition += Vector2.left * 2 * patienceRect.sizeDelta;
 
             var killsPanelTarget = _killsPanel.anchoredPosition;
-            _killsPanel.anchoredPosition += Vector2.down * 2 * _killsPanel.sizeDelta;
+            _killsPanel.anchoredPosition += Vector2.right * 2 * _killsPanel.sizeDelta;
 
             var scorePanelTarget = _scorePanel.anchoredPosition;
-            _scorePanel.anchoredPosition += Vector2.right * 2 * _scorePanel.sizeDelta;
+            _scorePanel.anchoredPosition += Vector2.down * 3 * _scorePanel.sizeDelta;
 
             _panelAnimation = DOTween.Sequence()
                 .Insert(0, _characterPanel.DOAnchorPos(characterPanelTarget, duration).SetEase(Ease.OutBack))
                 .Insert(delay, patienceRect.DOAnchorPos(patiencePanelTarget, duration).SetEase(Ease.OutBack))
-                .Insert(delay * 2, _killsPanel.DOAnchorPos(killsPanelTarget, duration).SetEase(Ease.OutBack))
-                .Insert(delay * 3, _scorePanel.DOAnchorPos(scorePanelTarget, duration).SetEase(Ease.OutBack))
+                .Insert(delay * 2, _scorePanel.DOAnchorPos(scorePanelTarget, duration).SetEase(Ease.OutBack))
+                .Insert(delay * 3, _killsPanel.DOAnchorPos(killsPanelTarget, duration).SetEase(Ease.OutBack))
                 .OnComplete(() => onDone?.Invoke());
         }
 
