@@ -11,6 +11,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Transform _lookPoint;
         [SerializeField] private Transform[] _ditherCheckPoints;
         public Transform[] DitherCheckPoints => _ditherCheckPoints;
+        [SerializeField] private Transform _vfx;
 
         [Header("Parameters")]
         [SerializeField] private float _acceleration;
@@ -24,21 +25,9 @@ namespace _Game.Scripts.Objects {
 
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
         private readonly Dictionary<string, AudioSource> _sounds = new Dictionary<string, AudioSource>();
-        private float lastVertical = 0;
-        private float lastHorizontal = 0;
-
-        public Transform LookPoint {
-            get {
-                _lookPoint.position = transform.position + transform.forward * (CurrentVelocity * 0.4f);
-                return _lookPoint;
-            }
-        }
-
-        private void OnDestroy() { // kappa 2
-            foreach (var value in _sounds.Keys.ToArray()) {
-                TurnSoundOff(value);
-            }
-        }
+        private float _lastVertical = 0;
+        private Tween _destructionAnimation;
+        private bool _killed;
 
         private void TurnSoundOn(string soundName, float volume = 0.3f, bool loop = false, bool reset = false) {
             if (_sounds.TryGetValue(soundName, out var source) && !source.isPlaying) {
@@ -73,6 +62,10 @@ namespace _Game.Scripts.Objects {
         }
 
         private void FixedUpdate() {
+            if (_killed) {
+                return;
+            }
+
             var vertical = Input.GetAxisRaw("Vertical");
             var horizontal = Input.GetAxisRaw("Horizontal");
 
@@ -101,7 +94,7 @@ namespace _Game.Scripts.Objects {
             }
             
             
-            if (vertical != 0 && lastVertical == 0) {
+            if (vertical != 0 && _lastVertical == 0) {
                 TurnSoundOn("pressW", 1f, reset: true);
             }
             else {
@@ -125,8 +118,7 @@ namespace _Game.Scripts.Objects {
             }
             
             UpdateVelocity(acceleration, brake, horizontal, Time.fixedDeltaTime);
-            lastHorizontal = horizontal;
-            lastVertical = vertical;
+            _lastVertical = vertical;
         }
 
         private void OnDrawGizmos() {
@@ -183,6 +175,37 @@ namespace _Game.Scripts.Objects {
             }
 
             _rb.velocity = transform.forward * Mathf.Clamp(CurrentVelocity + delta, -_maxBackVelocity, _maxVelocity);
+        }
+
+        public void Kill(bool immediate = false) {
+            _killed = true;
+
+            if (immediate) {
+                _destructionAnimation?.Kill();
+                Destroy(gameObject);
+                foreach (var value in _sounds.Keys.ToArray()) {
+                    TurnSoundOff(value);
+                }
+            } else {
+                _destructionAnimation =
+                    DOTween.Sequence()
+                        .Append(DOVirtual.Float(HorizontalVelocity().magnitude, 0, 0.3f, val => {
+                            var vel = HorizontalVelocity().normalized * val;
+                            _rb.velocity = new Vector3(vel.x, _rb.velocity.y, vel.y);
+                        }).SetEase(Ease.OutSine))
+                        .AppendCallback(() => {
+                            var vfx = Instantiate(_vfx);
+                            vfx.position = transform.position;
+                            GameController.Instance.ScheduleDeletion(vfx.gameObject, 1f);
+                            SoundController.Instance.PlaySound("thunder", 0.35f);
+                        })
+                        .AppendInterval(0.15f)
+                        .AppendCallback(() => Destroy(gameObject));
+            }
+
+            Vector2 HorizontalVelocity() {
+                return new Vector2(_rb.velocity.x, _rb.velocity.z);
+            }
         }
 
         private void OnCollisionEnter(Collision collision) {

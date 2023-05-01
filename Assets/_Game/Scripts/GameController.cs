@@ -6,12 +6,15 @@ using _Game.Scripts.Objects.Pedestrian;
 using _Game.Scripts.UI;
 using DG.Tweening;
 using GeneralUtils;
+using GeneralUtils.Processes;
 using GeneralUtils.UI;
 using UnityEngine;
 using UnityEngine.AI;
 
 namespace _Game.Scripts {
     public class GameController : SingletonBehaviour<GameController> {
+        [SerializeField] private TutorialController _tutorialController;
+
         [Header("Objects")]
         [SerializeField] private GameObject _map;
         [SerializeField] private CameraController _cameraController;
@@ -42,6 +45,7 @@ namespace _Game.Scripts {
         private readonly UpdatedValue<float> _timer = new UpdatedValue<float>();
         private readonly UpdatedValue<Pedestrian> _currentTarget = new UpdatedValue<Pedestrian>();
         private Tween _timerTween;
+        private Tween _timeScaleTween;
         private DitheringController _ditheringController;
         private readonly Dictionary<GameObject, float> _objectsToDelete = new Dictionary<GameObject, float>();
         private bool _lost;
@@ -56,6 +60,29 @@ namespace _Game.Scripts {
 
         private void Start() {
             _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevel);
+            _tutorialController.LoadActions(new Dictionary<TutorialController.TutorialAction, Func<Process>> {
+                [TutorialController.TutorialAction.Pause] = () => new AsyncProcess(PauseGame),
+                [TutorialController.TutorialAction.Unpause] = () => new AsyncProcess(UnpauseGame),
+            });
+        }
+
+        public void PauseGame(Action onDone = null) {
+            TogglePause(true, onDone);
+        }
+
+        public void UnpauseGame(Action onDone = null) {
+            TogglePause(false, onDone);
+        }
+
+        private void TogglePause(bool pause, Action onDone) {
+            _timeScaleTween?.Complete(true);
+
+            const float duration = 0.15f;
+            var to = pause ? 0f : 1f;
+
+            _timeScaleTween = DOVirtual.Float(Time.timeScale, to, duration, val => Time.timeScale = val)
+                .SetUpdate(true)
+                .OnComplete(() => onDone?.Invoke());
         }
 
         private void StartLevel() {
@@ -79,12 +106,15 @@ namespace _Game.Scripts {
 
             _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience, _ordersCompleted, _score);
             SetTarget();
+            _gameUIPanel.State.WaitFor(UIElement.EState.Shown, () => {
+                _tutorialController.StartTutorial();
+            });
         }
 
         private void EndLevel(Action onDone) {
             StopTimer();
             if (Player != null) {
-                Destroy(Player.gameObject);
+                Player.Kill(true);
             }
 
             var objects = _objectsToDelete.Keys.ToArray();
@@ -172,7 +202,8 @@ namespace _Game.Scripts {
             Debug.LogError("GAME OVER");
             _lost = true;
             StopTimer();
-            Destroy(Player.gameObject);
+            Player.Kill();
+            // Destroy(Player.gameObject);
 
             _gameUIPanel.Hide();
             _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave, RestartLevel, _score.Value, _ordersCompleted.Value);

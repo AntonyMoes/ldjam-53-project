@@ -33,15 +33,14 @@ namespace _Game.Scripts.UI {
             _mainMenuButton.OnClick.Subscribe(OnMainMenuClick);
 
             var timeScale = Time.timeScale;
-            OnShown.Subscribe(() => {
+            OnShowing.Subscribe(() => {
                 if (!Lost) {
-                    timeScale = Time.timeScale;
-                    Time.timeScale = 0f;
+                    GameController.Instance.PauseGame();
                 }
             });
             OnHiding.Subscribe(() => {
                 if (!Lost) {
-                    Time.timeScale = timeScale;
+                    GameController.Instance.UnpauseGame();
                 }
             });
         }
@@ -89,7 +88,7 @@ namespace _Game.Scripts.UI {
                     _contents.alpha = 1f;
                     ct.anchoredPosition = initialPosition;
                     onDone?.Invoke();
-                });
+                }).SetUpdate(true);
         }
 
         protected override void PerformHide(Action onDone = null) {
@@ -106,7 +105,7 @@ namespace _Game.Scripts.UI {
                     _contents.alpha = 1f;
                     ct.anchoredPosition = initialPosition;
                     onDone?.Invoke();
-                });
+                }).SetUpdate(true);
         }
     }
 }

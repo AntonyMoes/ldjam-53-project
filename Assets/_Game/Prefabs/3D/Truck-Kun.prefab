@@ -265,6 +265,7 @@ MonoBehaviour:
   - {fileID: 6948213469549475460}
   - {fileID: 995363025752492749}
   - {fileID: 8944077961867038120}
+  _vfx: {fileID: 1901575517916401130, guid: 8aeeba678f01b574da3e754909da7014, type: 3}
   _acceleration: 10
   _backAcceleration: 5
   _brakeAcceleration: 20

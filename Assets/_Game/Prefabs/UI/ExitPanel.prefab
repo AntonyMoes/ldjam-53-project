@@ -279,7 +279,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3410543232290573987
 RectTransform:
   m_ObjectHideFlags: 0
@@ -317,8 +317,8 @@ MonoBehaviour:
   _restartButton: {fileID: 1882409986123594684}
   _continueButton: {fileID: 8122604606416074748}
   _mainMenuButton: {fileID: 6463446804434771373}
-  _leavingText: Do not disappoint the goddess
-  _lostText: You have disappointed the goddess
+  _leavingText: Get back to work. Now.
+  _lostText: You have disappointed The Goddess.
   _text: {fileID: 1209340504617670874}
   _loseContent: {fileID: 7600347984734060438}
   _score: {fileID: 8006610944238516639}

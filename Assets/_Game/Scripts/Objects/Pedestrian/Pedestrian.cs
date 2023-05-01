@@ -71,8 +71,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
                 _destructionAnimation?.Kill();
                 Destroy(gameObject);
             } else {
-                // TODO
-                _destructionAnimation = //DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+                _destructionAnimation =
                     DOTween.Sequence()
                         .Append(DOVirtual.Float(HorizontalVelocity().magnitude, 0, 0.3f, val => {
                             var vel = HorizontalVelocity().normalized * val;
