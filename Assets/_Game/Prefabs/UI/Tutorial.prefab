@@ -156,10 +156,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u0416\u043C\u044F\u043A\u043D\u0438 \u0434\u0430\u0431\u044B \u043F\u0440\u043E\u0434\u043E\u043B\u0436\u0438\u0442\u044C"
+  m_text: Tap To continue
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 25890fa9fce0c9e478975749f352c426, type: 2}
-  m_sharedMaterial: {fileID: 5066150378395505286, guid: 60531e289d43df641baff629d97f2c96, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 64d78cecc7bcd47449b5c720360b132d, type: 2}
+  m_sharedMaterial: {fileID: 7305118275076504656, guid: 64d78cecc7bcd47449b5c720360b132d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -361,7 +361,7 @@ MonoBehaviour:
     text: This is your truck. Control it with WASD or arrow keys to drive over the
       pedestrians
     action: 1
-    position: 4
+    position: 2
   - mask: {fileID: 0}
     text: 'This is the timer. It shows you your next target and the time you have
       to run it over
@@ -403,7 +403,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1138327315034433953
 RectTransform:
   m_ObjectHideFlags: 0
@@ -589,8 +589,8 @@ MonoBehaviour:
 
 '
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
+  m_sharedMaterial: {fileID: -3179239096878061223, guid: 5f928011a1a3150488484921b9c1c0a6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -614,7 +614,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 38
+  m_fontSize: 32.5
   m_fontSizeBase: 42
   m_fontWeight: 400
   m_enableAutoSizing: 1

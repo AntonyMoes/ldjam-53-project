@@ -1521,13 +1521,9 @@ PrefabInstance:
     m_TransformParent: {fileID: 215032966}
     m_Modifications:
     - target: {fileID: 1138327313561520588, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
-      propertyPath: m_text
-      value: Tap To continue
+      propertyPath: m_hasFontAssetChanged
+      value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1138327313561520588, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
-      propertyPath: m_fontAsset
-      value: 
-      objectReference: {fileID: 11400000, guid: 64d78cecc7bcd47449b5c720360b132d, type: 2}
     - target: {fileID: 1138327315010698145, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1636,13 +1632,13 @@ PrefabInstance:
       propertyPath: _steps.Array.data[4].mask
       value: 
       objectReference: {fileID: 60438907}
-    - target: {fileID: 1138327315010698147, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
-      propertyPath: _steps.Array.data[0].position
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 1138327315010698150, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
       propertyPath: m_Name
       value: Tutorial
+      objectReference: {fileID: 0}
+    - target: {fileID: 1138327315010698150, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
