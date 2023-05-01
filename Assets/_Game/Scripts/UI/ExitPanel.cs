@@ -16,6 +16,11 @@ namespace _Game.Scripts.UI {
         [SerializeField] private string _lostText;
         [SerializeField] private TextMeshProUGUI _text;
 
+        [Header("LoseContent")]
+        [SerializeField] private GameObject _loseContent;
+        [SerializeField] private TextMeshProUGUI _score;
+        [SerializeField] private TextMeshProUGUI _orders;
+
         public bool Lost => _restartLevel != null;
 
         private Action _restartLevel;
@@ -41,7 +46,7 @@ namespace _Game.Scripts.UI {
             });
         }
 
-        public void Load(Action endLevel, Action restartLevel = null) {
+        public void Load(Action endLevel, Action restartLevel = null, int score = 0, int orders = 0) {
             _endLevel = endLevel;
             _restartLevel = restartLevel;
 
@@ -49,6 +54,9 @@ namespace _Game.Scripts.UI {
             _continueButton.gameObject.SetActive(!Lost);
 
             _text.text = Lost ? _lostText : _leavingText;
+            _loseContent.SetActive(Lost);
+            _score.text = score.ToString();
+            _orders.text = orders.ToString();
         }
 
         private void OnRestartClick() {

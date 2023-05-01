@@ -1,5 +1,6 @@
 ﻿using System;
 using _Game.Scripts.UI.Base;
+using DG.Tweening;
 using GeneralUtils;
 using GeneralUtils.UI;
 using TMPro;
@@ -15,6 +16,7 @@ namespace _Game.Scripts.UI {
         private UpdatedValue<float> _timerValue;
         private Transform _target;
         private bool _loaded;
+        private Tween _animation;
 
         public void Load(float initialValue, UpdatedValue<float> timerValue, Transform target) {
             _loaded = true;
@@ -25,7 +27,7 @@ namespace _Game.Scripts.UI {
         }
 
         public void Update() {
-            if (State.Value != EState.Shown) {
+            if (State.Value != EState.Shown && State.Value != EState.Showing) {
                 return;
             }
 
@@ -77,8 +79,33 @@ namespace _Game.Scripts.UI {
         }
 
         private void OnValueChanged(float value) {
+            if (State.Value == EState.Hiding) {
+                return;
+            }
+
             _bar.CurrentValue = value;
             _label.text = $"{Mathf.Round(value)}";
+        }
+
+        protected override void PerformShow(Action onDone = null) {
+            _animation?.Complete(true);
+
+            const float duration = 0.2f;
+            transform.localScale = Vector3.zero;
+            _animation = transform
+                .DOScale(Vector3.one, duration)
+                .SetEase(Ease.OutBack)
+                .OnComplete(() => onDone?.Invoke());
+        }
+
+        protected override void PerformHide(Action onDone = null) {
+            _animation?.Complete(true);
+
+            const float duration = 0.2f;
+            _animation = transform
+                .DOScale(Vector3.zero, duration)
+                .SetEase(Ease.InSine)
+                .OnComplete(() => onDone?.Invoke());
         }
     }
 }
