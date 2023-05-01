@@ -27,6 +27,9 @@ namespace _Game.Scripts {
         [SerializeField] private float _defaultTimer;
         public float DefaultTimer => _defaultTimer;
 
+        [SerializeField] private float _bonusTimer;
+        public float BonusTimer => _bonusTimer;
+
         [SerializeField] private float _startMultiplier;
         public float StartMultiplier => _startMultiplier;
 

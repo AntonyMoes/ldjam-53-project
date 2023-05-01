@@ -3103,6 +3103,7 @@ MonoBehaviour:
     _patienceOnMistake: 35
     _guaranteedTimer: 8
     _defaultTimer: 3.4
+    _bonusTimer: 3
     _startMultiplier: 4.9
     _deltaMultiplier: 0.6
     _population: 80
