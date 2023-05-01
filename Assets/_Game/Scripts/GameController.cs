@@ -261,7 +261,6 @@ namespace _Game.Scripts {
 
         private void StartTimer() {
             const float timerDistanceMultiplier = 100f;
-            const float multiplierThreshold = 0.9f;
             var config = Locator.Instance.Config;
 
             var target = _currentTarget.Value;
@@ -278,9 +277,7 @@ namespace _Game.Scripts {
 
             Debug.Log(distance);
             Debug.Log(_currentOrderTime);
-            if (_multiplier > multiplierThreshold) {
-                _multiplier -= config.DeltaMultiplier;
-            }
+            _multiplier = Mathf.Max(_multiplier - config.DeltaMultiplier, 0);
 
             _timer.Value = duration;
             _gameUIPanel.TargetTimer.State.WaitFor(UIElement.EState.Hided, () => {

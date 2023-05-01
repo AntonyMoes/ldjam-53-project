@@ -31,18 +31,6 @@ namespace _Game.Scripts.UI {
             _restartButton.OnClick.Subscribe(OnRestartClick);
             _continueButton.OnClick.Subscribe(OnContinueClick);
             _mainMenuButton.OnClick.Subscribe(OnMainMenuClick);
-
-            var timeScale = Time.timeScale;
-            OnShowing.Subscribe(() => {
-                if (!Lost) {
-                    GameController.Instance.PauseGame();
-                }
-            });
-            OnHiding.Subscribe(() => {
-                if (!Lost) {
-                    GameController.Instance.UnpauseGame();
-                }
-            });
         }
 
         public void Load(Action endLevel, Action restartLevel = null, int score = 0, int orders = 0) {
@@ -72,6 +60,10 @@ namespace _Game.Scripts.UI {
         }
 
         protected override void PerformShow(Action onDone = null) {
+            if (!Lost) {
+                GameController.Instance.PauseGame();
+            }
+
             _tween?.Complete(true);
 
             const float duration = 0.3f;
@@ -92,6 +84,10 @@ namespace _Game.Scripts.UI {
         }
 
         protected override void PerformHide(Action onDone = null) {
+            if (!Lost) {
+                GameController.Instance.UnpauseGame();
+            }
+
             _tween?.Complete(true);
 
             const float duration = 0.3f;

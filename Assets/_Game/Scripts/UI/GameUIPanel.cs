@@ -84,7 +84,7 @@ namespace _Game.Scripts.UI {
             _ticket.anchoredPosition = Vector2.zero;
 
             const float duration = 0.15f;
-            const float ticketDuration = 2f;
+            const float ticketDuration = 3f;
             var original = _killsLabel.color;
             _killsAnimation = DOTween.Sequence()
                 .Append(_killsLabel.DOColor(_flashColor, duration).SetEase(Ease.OutSine))
