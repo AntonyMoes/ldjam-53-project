@@ -98,6 +98,7 @@ namespace _Game.Scripts {
         }
 
         private void StartLevel() {
+            _goddess.SetState(Goddess.State.Idle);
             _lost = false;
             _map.SetActive(true);
             _rng = new Rng(Rng.RandomSeed);
@@ -119,6 +120,7 @@ namespace _Game.Scripts {
             _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience, _ordersCompleted, _score);
             SetTarget();
             _gameUIPanel.State.WaitFor(UIElement.EState.Shown, () => {
+                // TODO
                 _tutorialController.StartTutorial();
             });
         }
