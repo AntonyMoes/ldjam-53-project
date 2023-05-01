@@ -119,10 +119,11 @@ namespace _Game.Scripts {
 
             _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience, _ordersCompleted, _score);
             SetTarget();
-            _gameUIPanel.State.WaitFor(UIElement.EState.Shown, () => {
-                // TODO
-                _tutorialController.StartTutorial();
-            });
+            if (!SaveManager.GetBool(SaveManager.BoolData.TutorialComplete)) {
+                _gameUIPanel.State.WaitFor(UIElement.EState.Shown, () => {
+                    _tutorialController.StartTutorial(() => SaveManager.SetBool(SaveManager.BoolData.TutorialComplete, true));
+                });
+            }
         }
 
         private void EndLevel(Action onDone) {
