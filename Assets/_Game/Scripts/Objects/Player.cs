@@ -82,7 +82,7 @@ namespace _Game.Scripts.Objects {
                         * _brakeAcceleration;
 
             if (CurrentVelocity == 0) {
-                TurnSoundOn("stayStill", 0.6f, true);
+                TurnSoundOn("stayStill", 0.3f, true);
             } else {
                 TurnSoundOff("stayStill");
             }
@@ -95,7 +95,7 @@ namespace _Game.Scripts.Objects {
             
             
             if (vertical != 0 && _lastVertical == 0) {
-                TurnSoundOn("pressW", 1f, reset: true);
+                TurnSoundOn("pressW", 0.4f, reset: true);
             }
             else {
                 // TurnSoundOff("pressW");
@@ -197,7 +197,7 @@ namespace _Game.Scripts.Objects {
                             var vfx = Instantiate(_vfx);
                             vfx.position = transform.position;
                             GameController.Instance.ScheduleDeletion(vfx.gameObject, 1f);
-                            SoundController.Instance.PlaySound("thunder", 0.35f);
+                            SoundController.Instance.PlaySound("thunder", 0.25f);
                         })
                         .AppendInterval(0.15f)
                         .AppendCallback(() => Destroy(gameObject));

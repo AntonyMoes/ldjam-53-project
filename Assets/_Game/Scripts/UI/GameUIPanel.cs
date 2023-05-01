@@ -90,8 +90,7 @@ namespace _Game.Scripts.UI {
             const float duration = 0.3f;
             const float delay = 0.2f;
 
-            var characterPanelTarget = _characterPanel.anchoredPosition;
-            _characterPanel.anchoredPosition += Vector2.up * 2 * _characterPanel.sizeDelta;
+            _characterPanel.transform.localRotation = Quaternion.Euler(0, -90, 0);
 
             var patienceRect = (RectTransform) _patienceProgressBar.transform;
             var patiencePanelTarget = patienceRect.anchoredPosition;
@@ -104,7 +103,7 @@ namespace _Game.Scripts.UI {
             _scorePanel.anchoredPosition += Vector2.down * 3 * _scorePanel.sizeDelta;
 
             _panelAnimation = DOTween.Sequence()
-                .Insert(0, _characterPanel.DOAnchorPos(characterPanelTarget, duration).SetEase(Ease.OutBack))
+                .Insert(0, _characterPanel.DOLocalRotate(Vector3.zero, duration * 2.5f).SetEase(Ease.OutBounce))
                 .Insert(delay, patienceRect.DOAnchorPos(patiencePanelTarget, duration).SetEase(Ease.OutBack))
                 .Insert(delay * 2, _scorePanel.DOAnchorPos(scorePanelTarget, duration).SetEase(Ease.OutBack))
                 .Insert(delay * 3, _killsPanel.DOAnchorPos(killsPanelTarget, duration).SetEase(Ease.OutBack))

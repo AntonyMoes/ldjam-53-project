@@ -831,7 +831,6 @@ GameObject:
   m_Component:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
-  - component: {fileID: 519420029}
   - component: {fileID: 519420030}
   - component: {fileID: 519420033}
   m_Layer: 0
@@ -841,14 +840,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &519420029
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
 --- !u!114 &519420030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1155,6 +1146,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 215032966}
     m_Modifications:
+    - target: {fileID: 1138327313561520588, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
+      propertyPath: m_text
+      value: Tap To continue
+      objectReference: {fileID: 0}
     - target: {fileID: 1138327315010698145, guid: abe1ebe553e768943b91f9476627e57b, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -2073,7 +2068,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1252260609}
   - component: {fileID: 1252260608}
-  - component: {fileID: 1252260607}
   - component: {fileID: 1252260610}
   m_Layer: 0
   m_Name: UICamera
@@ -2082,14 +2076,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &1252260607
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252260606}
-  m_Enabled: 1
 --- !u!20 &1252260608
 Camera:
   m_ObjectHideFlags: 0
@@ -3178,6 +3164,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: ce4dc2e1a27e8404299cf6a0d6b94a25, type: 3}
   - {fileID: 8300000, guid: 142be10e7cd4ff44ba8354b62aa9639b, type: 3}
   - {fileID: 8300000, guid: 7cee15602f5b92a4c824a958a5c3d1bc, type: 3}
+  - {fileID: 8300000, guid: febf6f442ad264f449ec01c23da1f0bf, type: 3}
+  - {fileID: 8300000, guid: 38c6940c0fd12d54bab883285ad52c47, type: 3}
 --- !u!1 &2115627238 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5562730370260454012, guid: 4c9cb331dd895d64dae75c7958b5bf99, type: 3}
@@ -3259,6 +3247,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 215032966}
     m_Modifications:
+    - target: {fileID: 516417345861947540, guid: f6935a7a4fe81d845bf2debb0fdfc17d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 516417345861947540, guid: f6935a7a4fe81d845bf2debb0fdfc17d, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -125.99994
+      objectReference: {fileID: 0}
     - target: {fileID: 4007271806950214484, guid: f6935a7a4fe81d845bf2debb0fdfc17d, type: 3}
       propertyPath: m_Name
       value: GameUIPanel

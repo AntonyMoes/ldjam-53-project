@@ -59,7 +59,7 @@ namespace _Game.Scripts {
         private static float SetPatience(float value) => Mathf.Clamp(value, 0, Locator.Instance.Config.MaxPatience);
 
         private void Start() {
-            _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevel);
+            _mainMenu = UIController.Instance.ShowMainMenuWindow(StartLevelFromMenu);
             _tutorialController.LoadActions(new Dictionary<TutorialController.TutorialAction, Func<Process>> {
                 [TutorialController.TutorialAction.Pause] = () => new AsyncProcess(PauseGame),
                 [TutorialController.TutorialAction.Unpause] = () => new AsyncProcess(UnpauseGame),
@@ -83,6 +83,11 @@ namespace _Game.Scripts {
             _timeScaleTween = DOVirtual.Float(Time.timeScale, to, duration, val => Time.timeScale = val)
                 .SetUpdate(true)
                 .OnComplete(() => onDone?.Invoke());
+        }
+
+        private void StartLevelFromMenu() {
+            SoundController.Instance.PlayMusic("SoundTrack");
+            StartLevel();
         }
 
         private void StartLevel() {
@@ -188,6 +193,7 @@ namespace _Game.Scripts {
 
         private void OnTimerEnd() {
             Debug.LogError("Late!");
+            SoundController.Instance.PlaySound("sfx_mistake", 1f);
             _patience.Value -= Locator.Instance.Config.PatienceOnFail;
 
             if (_lost) {

@@ -31,6 +31,7 @@ namespace _Game.Scripts.UI {
 
         protected override void PerformShow(Action onDone = null) {
             _tween?.Complete(true);
+            SoundController.Instance.PlayMusic("MainMenu");
 
             const float duration = 0.3f;
 
