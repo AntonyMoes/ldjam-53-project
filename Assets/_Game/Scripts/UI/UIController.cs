@@ -46,6 +46,12 @@ namespace _Game.Scripts.UI {
         }
 
         private void OnCancel() {
+            var tutor = GameController.Instance.TutorialController;
+            if (tutor.Active) {
+                tutor.TryNextStep();
+                return;
+            }
+
             GameController.Instance.OnCancel();
 
             if (_creditsWindow.State.Value == UIElement.EState.Shown) {

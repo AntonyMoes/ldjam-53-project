@@ -25,9 +25,13 @@ namespace _Game.Scripts {
         private int _currentStep;
         private Action _onDone;
 
+        private bool CanStartNextStep => _nextStepButton.enabled;
+        public bool Active { get; private set; }
+
         private IDictionary<TutorialAction, Func<Process>> _actions;
 
         private void Awake() {
+            _nextStepButton.enabled = false;
             _nextStepButton.onClick.AddListener(NextStep);
             _tutorialGroup.gameObject.SetActive(false);
         }
@@ -44,14 +48,27 @@ namespace _Game.Scripts {
             _currentSteps = steps;
             _currentStep = -1;
             _onDone = onDone;
+            Active = true;
             _tutorialGroup.alpha = 0f;
             _stepText.color = _stepText.color.WithAlpha(1f);
             NextStep();
         }
 
+        public void TryNextStep() {
+            if (!CanStartNextStep) {
+                return;
+            }
+
+            NextStep();
+        }
+
         private void NextStep() {
             if (++_currentStep >= _currentSteps.Length) {
-                HideHider(() => GetActionProcess(_exitAction).Run(_onDone));
+                HideHider(() => GetActionProcess(_exitAction).Run(() => {
+                    _onDone?.Invoke();
+                    _nextStepButton.enabled = false;
+                    Active = false;
+                }));
                 return;
             }
 
@@ -109,11 +126,6 @@ namespace _Game.Scripts {
                 _stepText.text = currentStep.text;
 
                 bool Has(TextPosition component) => HasComponent(currentStep.position, component);
-                // var horAlignment = (Has(TextPosition.Left), Has(TextPosition.Right)) switch {
-                //     (true, false) => TextAlignmentOptions.Right,
-                //     (false, true) => TextAlignmentOptions.Left,
-                //     _ => TextAlignmentOptions.Center
-                // };
                 var verAlignment = (Has(TextPosition.Up), Has(TextPosition.Down)) switch {
                     (true, false) => TextAlignmentOptions.Bottom,
                     (false, true) => TextAlignmentOptions.Top,
@@ -144,37 +156,22 @@ namespace _Game.Scripts {
             if (Has(TextPosition.Down)) {
                 yPivot += pivotDelta;
                 yAnchor -= center;
-                // textTransform.pivot = new Vector2(center, center + pivotDelta);
-                // textTransform.anchorMax = textTransform.anchorMin = new Vector2(center, 0f);
             }
 
             if (Has(TextPosition.Up)) {
                 yPivot -= pivotDelta;
                 yAnchor += center;
-                // textTransform.pivot = new Vector2(center, center - pivotDelta);
-                // textTransform.anchorMax = textTransform.anchorMin = new Vector2(center, 1f);
             }
 
             if (Has(TextPosition.Left)) {
                 xPivot += pivotDelta;
                 xAnchor -= center;
-                // textTransform.pivot = new Vector2(center + pivotDelta, center);
-                // textTransform.anchorMax = textTransform.anchorMin = new Vector2(0f, center);
             }
 
             if (Has(TextPosition.Right)) {
                 xPivot -= pivotDelta;
                 xAnchor += center;
-                // textTransform.pivot = new Vector2(center - pivotDelta, center);
-                // textTransform.anchorMax = textTransform.anchorMin = new Vector2(1f, center);
             }
-            // } else {
-            //     // case TextPosition.Center:
-            //     //     textTransform.pivot = new Vector2(center, center);
-            //     //     textTransform.anchorMax = textTransform.anchorMin = new Vector2(center, center);
-            //     //     break;
-            //     // throw new ArgumentOutOfRangeException(nameof(position), position, null);
-            // }
 
             textTransform.pivot = new Vector2(xPivot, yPivot);
             textTransform.anchorMax = textTransform.anchorMin = new Vector2(xAnchor, yAnchor);
@@ -202,7 +199,6 @@ namespace _Game.Scripts {
             Up = 1 << 1,
             Left = 1 << 2,
             Right = 1 << 3,
-            // Center = 1 << 4
         }
 
         private static bool HasComponent(TextPosition position, TextPosition component) => (position & component) == component;

@@ -14,7 +14,8 @@ using UnityEngine.AI;
 namespace _Game.Scripts {
     public class GameController : SingletonBehaviour<GameController> {
         [SerializeField] private TutorialController _tutorialController;
-
+        public TutorialController TutorialController => _tutorialController;
+        
         [Header("Objects")]
         [SerializeField] private GameObject _map;
         [SerializeField] private CameraController _cameraController;
