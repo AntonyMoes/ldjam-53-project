@@ -121,6 +121,7 @@ namespace _Game.Scripts {
         private void OnPedestrianCollision(Pedestrian pedestrian) {
             pedestrian.OnCollision.Unsubscribe(OnPedestrianCollision);
             pedestrian.Kill();
+            SoundController.Instance.PlaySound("pedestianHit", 0.3f);
             _pedestrians.Remove(pedestrian);
             _pedestrians.Add(SpawnPedestrian());
 
@@ -130,6 +131,7 @@ namespace _Game.Scripts {
                 UpdateOrdersCompleted();
                 int score = _score.Value;
                 UpdateScore((150 - Convert.ToInt32(100 * Mathf.Min((_startOrderTime - _timer.Value) / _currentOrderTime, 1))) * (_patience.Value == 100 ? 2 : 1));
+                SoundController.Instance.PlaySound("heroDelivery", 0.3f);
                 if (_score.Value / config.DeltaPointsForSpeedUp - score / config.DeltaPointsForSpeedUp > 0) {
                     SpeedUpPedestrian(config.DeltaSpeed);
                 }
@@ -139,6 +141,7 @@ namespace _Game.Scripts {
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
+                SoundController.Instance.PlaySound("mistake", 0.3f);
                 _patience.Value -= config.PatienceOnMistake;
             }
         }
@@ -194,6 +197,7 @@ namespace _Game.Scripts {
 
             _currentTarget.Value  = _rng.NextChoice(_pedestrians);
             _currentTarget.Value .IsTarget = true;
+            SoundController.Instance.PlaySound("newRequest", 0.3f);
             StartTimer();
         }
 

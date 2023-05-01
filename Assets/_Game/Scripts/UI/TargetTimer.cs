@@ -15,6 +15,7 @@ namespace _Game.Scripts.UI {
         private UpdatedValue<float> _timerValue;
         private Transform _target;
         private bool _loaded;
+        private AudioSource _soundController;
 
         public void Load(float initialValue, UpdatedValue<float> timerValue, Transform target) {
             _loaded = true;
@@ -28,6 +29,18 @@ namespace _Game.Scripts.UI {
             if (State.Value != EState.Shown) {
                 return;
             }
+
+            if (_timerValue.Value > 5f && _timerValue.Value < 6f) {
+                if (!_soundController)
+                    _soundController = SoundController.Instance.PlaySound("timer-tick", 0.7f);
+            } 
+            else {
+                if (_soundController && _timerValue.Value > 6f) {
+                    _soundController.Stop();
+                    _soundController = null;
+                }
+            } // kappa
+
 
             var viewportPoint = Locator.Instance.MainCamera.WorldToViewportPoint(_target.position);
             var flippedPoint = (Vector2) (viewportPoint.z > 0

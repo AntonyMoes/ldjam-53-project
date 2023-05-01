@@ -365,7 +365,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Management & Programming:\n\t\t\tAntonyMo\nFeature Design:\n\t\t\tSevenzik\n3D
+  m_text: "Management & Programming:\n\t\t\tAntonyMo\nFeature Design:\n\t\t\tsevenzik\n3D
     Art:\n\t\t\tDarkenezy\nUI Design & 2D Art:\n\t\t\tBoshy\nMusic & SFX:\n\t\t\tSwordOfBlood"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
