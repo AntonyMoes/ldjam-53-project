@@ -172,6 +172,7 @@ namespace _Game.Scripts {
         private void OnPedestrianCollision(Pedestrian pedestrian) {
             pedestrian.OnCollision.Unsubscribe(OnPedestrianCollision);
             pedestrian.Kill();
+
             SoundController.Instance.PlaySound("pedestianHit", 0.3f);
             _pedestrians.Remove(pedestrian);
             _pedestrians.Add(SpawnPedestrian());
@@ -179,16 +180,20 @@ namespace _Game.Scripts {
             var config = Locator.Instance.Config;
             if (pedestrian.IsTarget) {
                 _goddess.SetState(Goddess.State.Happy);
-                Debug.LogError("Nice!");
-                UpdateOrdersCompleted();
-                int score = _score.Value;
-                UpdateScore((150 - Convert.ToInt32(100 * Mathf.Min((_startOrderTime - _timer.Value) / _currentOrderTime, 1))) * (_patience.Value == 100 ? 2 : 1));
                 SoundController.Instance.PlaySound("heroDelivery", 0.3f);
+                Debug.LogError("Nice!");
+
+                UpdateOrdersCompleted();
+
+                var score = _score.Value;
+                UpdateScore((150 - Convert.ToInt32(100 * Mathf.Min((_startOrderTime - _timer.Value) / _currentOrderTime, 1))) * (_patience.Value == 100 ? 2 : 1));
                 if (_score.Value / config.DeltaPointsForSpeedUp - score / config.DeltaPointsForSpeedUp > 0) {
-                    SpeedUpPedestrian(config.DeltaSpeed);
+                    SpeedUpPedestrians(config.DeltaSpeed);
                 }
+
                 Debug.LogError(_ordersCompleted.Value);
                 Debug.LogError(_score.Value);
+
                 _patience.Value += config.PatienceOnSuccess;
                 SetTarget();
             } else {
@@ -199,7 +204,7 @@ namespace _Game.Scripts {
             }
         }
 
-        private void SpeedUpPedestrian(float deltaSpeed) {
+        private void SpeedUpPedestrians(float deltaSpeed) {
             foreach (var pedestrian in _pedestrians) {
                 pedestrian.Speed.Value += deltaSpeed;
             }
@@ -215,7 +220,7 @@ namespace _Game.Scripts {
                 return;
             }
 
-            _currentTarget.Value .IsTarget = false;
+            _currentTarget.Value.IsTarget = false;
             SetTarget();
         }
 
@@ -224,7 +229,6 @@ namespace _Game.Scripts {
             _lost = true;
             StopTimer();
             Player.Kill();
-            // Destroy(Player.gameObject);
 
             _gameUIPanel.Hide();
             _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave, RestartLevel, _score.Value, _ordersCompleted.Value);
@@ -244,17 +248,9 @@ namespace _Game.Scripts {
 
         private void SetTarget() {
             StopTimer();
-            if (_currentTarget.Value != null) {
-                // _currentTarget.Value .IsTarget = false;
-                _currentTarget.Value  = null;
-            }
 
-            if (_pedestrians.Count == 0) {
-                return;
-            }
-
-            _currentTarget.Value  = _rng.NextChoice(_pedestrians);
-            _currentTarget.Value .IsTarget = true;
+            _currentTarget.Value = _rng.NextChoice(_pedestrians);
+            _currentTarget.Value.IsTarget = true;
             SoundController.Instance.PlaySound("newRequest", 0.3f);
             StartTimer();
         }

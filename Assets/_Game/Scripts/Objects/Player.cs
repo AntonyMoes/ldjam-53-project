@@ -55,11 +55,8 @@ namespace _Game.Scripts.Objects {
                     return;
                 }
 
-                var shouldStop = source.loop;
                 source.DOFade(0f, .15f).OnComplete(() => {
-                    if (shouldStop) {
-                        source.Stop();
-                    }
+                    source.Stop();
                 });
                 _sounds.Remove(soundName);
             }
@@ -96,8 +93,7 @@ namespace _Game.Scripts.Objects {
             } else {
                 TurnSoundOff("gearShift");
             }
-            
-            
+
             if (vertical != 0 && _lastVertical == 0) {
                 TurnSoundOn("pressW", 0.4f, reset: true);
             }
