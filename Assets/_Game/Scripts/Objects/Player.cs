@@ -2,6 +2,8 @@ using GeneralUtils;
 using UnityEngine;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
 
 namespace _Game.Scripts.Objects {
     public class Player : MonoBehaviour {
@@ -21,7 +23,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private float _maxBackVelocity;
 
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
-        private Dictionary<String, AudioSource> _sounds = new Dictionary<String, AudioSource>();
+        private readonly Dictionary<string, AudioSource> _sounds = new Dictionary<string, AudioSource>();
         private float lastVertical = 0;
         private float lastHorizontal = 0;
 
@@ -33,22 +35,37 @@ namespace _Game.Scripts.Objects {
         }
 
         private void OnDestroy() { // kappa 2
-            foreach (var value in _sounds.Values) {
-                value.loop = false;
+            foreach (var value in _sounds.Keys.ToArray()) {
+                TurnSoundOff(value);
             }
         }
 
-        private void TurnSoundOn(String soundName, float volume = 0.3f, bool loop = false) {
-            if (!_sounds.ContainsKey(soundName))
-                    _sounds[soundName] = SoundController.Instance.PlaySound(soundName, volume);
-                    _sounds[soundName].loop = loop;
+        private void TurnSoundOn(string soundName, float volume = 0.3f, bool loop = false, bool reset = false) {
+            if (_sounds.TryGetValue(soundName, out var source) && !source.isPlaying) {
+                _sounds.Remove(soundName);
+            }
+
+            if (_sounds.ContainsKey(soundName) && reset) {
+                TurnSoundOff(soundName);
+            }
+
+            if (!_sounds.ContainsKey(soundName)) {
+                _sounds[soundName] = SoundController.Instance.PlaySound(soundName, volume);
+            }
+            _sounds[soundName].loop = loop;
         }
 
-        private void TurnSoundOff(String soundName) {
+        private void TurnSoundOff(string soundName) {
             if (_sounds.ContainsKey(soundName)) {
-                    _sounds[soundName].loop = false;
-                    _sounds.Remove(soundName);
-                }
+                var source = _sounds[soundName];
+                var shouldStop = source.loop;
+                source.DOFade(0f, .15f).OnComplete(() => {
+                    if (shouldStop) {
+                        source.Stop();
+                    }
+                });
+                _sounds.Remove(soundName);
+            }
         }
 
         private void FixedUpdate() {
@@ -74,17 +91,17 @@ namespace _Game.Scripts.Objects {
             }
 
             if (CurrentVelocity == 0 && vertical != 0) {
-                TurnSoundOn("speedSignChange", 0.6f, false);
+                TurnSoundOn("gearShift", 0.6f, false);
             } else {
-                TurnSoundOff("speedSignChange");
+                TurnSoundOff("gearShift");
             }
             
             
             if (vertical != 0 && lastVertical == 0) {
-                TurnSoundOn("pressW", 1.0f, false);
+                TurnSoundOn("pressW", 1f, reset: true);
             }
             else {
-                TurnSoundOff("pressW");
+                // TurnSoundOff("pressW");
             }
 
             if (vertical != 0 || CurrentVelocity != 0) {
@@ -94,7 +111,8 @@ namespace _Game.Scripts.Objects {
                 TurnSoundOff("holdingW");
             }
 
-            if (vertical * CurrentVelocity < 0 && lastVertical * CurrentVelocity >= 0) {
+            // if (vertical * CurrentVelocity < 0 && lastVertical * CurrentVelocity >= 0) {
+            if (Mathf.Abs(brake) > 0) {
                 TurnSoundOn("brake2", 0.6f, false);
             }
             else 
@@ -161,6 +179,12 @@ namespace _Game.Scripts.Objects {
             }
 
             _rb.velocity = transform.forward * Mathf.Clamp(CurrentVelocity + delta, -_maxBackVelocity, _maxVelocity);
+        }
+
+        private void OnCollisionEnter(Collision collision) {
+            if (!collision.gameObject.TryGetComponent(out Pedestrian.Pedestrian _)) {
+                TurnSoundOn("bumpWall", 0.8f);
+            }
         }
     }
 }

@@ -980,6 +980,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1155774745612952882}
     m_Modifications:
+    - target: {fileID: 3428871692319944737, guid: 38c6a76f09ee8da4ea384669b24dd177, type: 3}
+      propertyPath: _sfx
+      value: pressStart
+      objectReference: {fileID: 0}
     - target: {fileID: 3428871692319944748, guid: 38c6a76f09ee8da4ea384669b24dd177, type: 3}
       propertyPath: m_Name
       value: RestartButton

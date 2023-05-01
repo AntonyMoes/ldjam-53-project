@@ -69,7 +69,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8352457117538073906, guid: cd43f07d4390bea4fb18496bfaaabdb4, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -136,6 +136,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _button: {fileID: 3428871692319944750}
+  _sfx: gearShift
 --- !u!95 &1756452911189795947
 Animator:
   serializedVersion: 3

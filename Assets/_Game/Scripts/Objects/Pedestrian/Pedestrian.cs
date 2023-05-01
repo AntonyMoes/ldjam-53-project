@@ -82,6 +82,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
                             var vfx = Instantiate(_vfx);
                             vfx.position = transform.position;
                             GameController.Instance.ScheduleDeletion(vfx.gameObject, 1f);
+                            SoundController.Instance.PlaySound("thunder", 0.35f);
                         })
                         .AppendInterval(0.15f)
                         .AppendCallback(() => Destroy(gameObject));

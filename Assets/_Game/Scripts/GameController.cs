@@ -145,7 +145,7 @@ namespace _Game.Scripts {
                 SetTarget();
             } else {
                 Debug.LogError("Wrong!");
-                SoundController.Instance.PlaySound("mistake", 0.3f);
+                SoundController.Instance.PlaySound("sfx_mistake", 1f);
                 _patience.Value -= config.PatienceOnMistake;
             }
         }
@@ -164,6 +164,7 @@ namespace _Game.Scripts {
                 return;
             }
 
+            _currentTarget.Value .IsTarget = false;
             SetTarget();
         }
 

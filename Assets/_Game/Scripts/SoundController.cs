@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 using GeneralUtils;
 using UnityEngine;
 
@@ -19,10 +20,12 @@ namespace _Game.Scripts {
                 _soundSources.Add(source);
             }
 
+            source.DOKill();
             source.clip = _clips.First(clip => clip.name == soundName);
             source.Play();
             source.volume = volume;
             source.pitch = pitch;
+            source.loop = false;
 
             return source;
         }
