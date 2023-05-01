@@ -8,8 +8,8 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Material _opaqueMaterial;
         [SerializeField] private Material _transparentMaterial;
 
-        private const float Transparent = 0.5f;
-        private const float Opaque = 1f;
+        private const float Transparent = 0.45f;
+        private const float Opaque = 0.8f;
         private const float Duration = 0.3f;
 
         private static readonly int Opacity = Shader.PropertyToID("_Opacity");

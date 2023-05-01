@@ -57,6 +57,7 @@ MonoBehaviour:
   _agent: {fileID: -5901899584991905079}
   _collider: {fileID: 7402112548642648633}
   _rb: {fileID: 7402112548642648628}
+  _vfx: {fileID: 1901575517916401130, guid: 7e2d77bfc85da944187c92f817851b3e, type: 3}
 --- !u!33 &7402112548642648635
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -116,7 +117,7 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}

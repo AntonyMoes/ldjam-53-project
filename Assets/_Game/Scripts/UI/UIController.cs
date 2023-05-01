@@ -27,14 +27,14 @@ namespace _Game.Scripts.UI {
             return _creditsWindow;
         }
 
-        public ExitPanel ShowExitPanel(Action endLevel, Action restart = null) {
-            _exitPanel.Load(endLevel, restart);
+        public ExitPanel ShowExitPanel(Action endLevel, Action restart = null, int score = 0, int orders = 0) {
+            _exitPanel.Load(endLevel, restart, score, orders);
             _exitPanel.Show();
             return _exitPanel;
         }
 
-        public GameUIPanel ShowGameUIPanel(UpdatedValue<float> patience, float maxPatience) {
-            _gameUIPanel.Load(patience, maxPatience);
+        public GameUIPanel ShowGameUIPanel(UpdatedValue<float> patience, float maxPatience, UpdatedValue<int> kills, UpdatedValue<int> score) {
+            _gameUIPanel.Load(patience, maxPatience, kills, score);
             _gameUIPanel.Show();
             return _gameUIPanel;
         }

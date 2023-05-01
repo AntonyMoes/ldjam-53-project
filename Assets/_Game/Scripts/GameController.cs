@@ -12,9 +12,6 @@ using UnityEngine.AI;
 
 namespace _Game.Scripts {
     public class GameController : SingletonBehaviour<GameController> {
-        [Header("UI")]
-        [SerializeField] private TargetTimer _targetTimer;
-
         [Header("Objects")]
         [SerializeField] private GameObject _map;
         [SerializeField] private CameraController _cameraController;
@@ -46,6 +43,7 @@ namespace _Game.Scripts {
         private readonly UpdatedValue<Pedestrian> _currentTarget = new UpdatedValue<Pedestrian>();
         private Tween _timerTween;
         private DitheringController _ditheringController;
+        private readonly Dictionary<GameObject, float> _objectsToDelete = new Dictionary<GameObject, float>();
         private bool _lost;
 
         public GameController() {
@@ -75,18 +73,24 @@ namespace _Game.Scripts {
             var config = Locator.Instance.Config;
             _multiplier = config.StartMultiplier;
             _pedestrians = Enumerable.Range(0, config.Population).Select(_ => SpawnPedestrian()).ToList();
-            SetTarget();
 
             _patience.Value = config.InitialPatience;
             _patience.WaitFor(0f, OnLose);
 
-            _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience);
+            _gameUIPanel = UIController.Instance.ShowGameUIPanel(_patience, config.MaxPatience, _ordersCompleted, _score);
+            SetTarget();
         }
 
         private void EndLevel(Action onDone) {
             StopTimer();
             if (Player != null) {
                 Destroy(Player.gameObject);
+            }
+
+            var objects = _objectsToDelete.Keys.ToArray();
+            _objectsToDelete.Clear();
+            foreach (var go in objects) {
+                Destroy(go);
             }
 
             _ditheringController.Dispose();
@@ -169,7 +173,8 @@ namespace _Game.Scripts {
             StopTimer();
             Destroy(Player.gameObject);
 
-            _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave, RestartLevel);
+            _gameUIPanel.Hide();
+            _exitPanel = UIController.Instance.ShowExitPanel(EndLevelAndLeave, RestartLevel, _score.Value, _ordersCompleted.Value);
         }
 
         public void OnCancel() {
@@ -187,7 +192,7 @@ namespace _Game.Scripts {
         private void SetTarget() {
             StopTimer();
             if (_currentTarget.Value != null) {
-                _currentTarget.Value .IsTarget = false;
+                // _currentTarget.Value .IsTarget = false;
                 _currentTarget.Value  = null;
             }
 
@@ -220,9 +225,9 @@ namespace _Game.Scripts {
             }
 
             _timer.Value = duration;
-            _targetTimer.State.WaitFor(UIElement.EState.Hided, () => {
-                _targetTimer.Load(duration, _timer, target.transform);
-                _targetTimer.Show();
+            _gameUIPanel.TargetTimer.State.WaitFor(UIElement.EState.Hided, () => {
+                _gameUIPanel.TargetTimer.Load(duration, _timer, target.transform);
+                _gameUIPanel.TargetTimer.Show();
             });
             _timerTween = DOVirtual
                 .Float(duration, 0f, duration, val => _timer.Value = val)
@@ -231,7 +236,7 @@ namespace _Game.Scripts {
         }
 
         private void StopTimer() {
-            _targetTimer.Hide();
+            _gameUIPanel.TargetTimer.Hide();
             _timerTween?.Kill();
         }
 
@@ -284,8 +289,19 @@ namespace _Game.Scripts {
             return null;
         }
 
+        public void ScheduleDeletion(GameObject go, float delay) {
+            _objectsToDelete.Add(go, delay);
+        }
+
         private void Update() {
             _ditheringController?.Update();
+            var objects = _objectsToDelete.Keys.ToArray();
+            foreach (var go in objects) {
+                if ((_objectsToDelete[go] -= Time.deltaTime) <= 0) {
+                    _objectsToDelete.Remove(go);
+                    Destroy(go);
+                }
+            }
         }
     }
 }

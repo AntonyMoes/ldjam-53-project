@@ -14,6 +14,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         [SerializeField] private NavMeshAgent _agent;
         [SerializeField] private Collider _collider;
         [SerializeField] private Rigidbody _rb;
+        [SerializeField] private Transform _vfx;
 
         private readonly Action<Pedestrian> _onCollision;
         public GeneralUtils.Event<Pedestrian> OnCollision { get; }
@@ -71,7 +72,23 @@ namespace _Game.Scripts.Objects.Pedestrian {
                 Destroy(gameObject);
             } else {
                 // TODO
-                _destructionAnimation = DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+                _destructionAnimation = //DOVirtual.DelayedCall(1f, () => Destroy(gameObject));
+                    DOTween.Sequence()
+                        .Append(DOVirtual.Float(HorizontalVelocity().magnitude, 0, 0.3f, val => {
+                            var vel = HorizontalVelocity().normalized * val;
+                            _rb.velocity = new Vector3(vel.x, _rb.velocity.y, vel.y);
+                        }).SetEase(Ease.OutSine))
+                        .AppendCallback(() => {
+                            var vfx = Instantiate(_vfx);
+                            vfx.position = transform.position;
+                            GameController.Instance.ScheduleDeletion(vfx.gameObject, 1f);
+                        })
+                        .AppendInterval(0.15f)
+                        .AppendCallback(() => Destroy(gameObject));
+            }
+
+            Vector2 HorizontalVelocity() {
+                return new Vector2(_rb.velocity.x, _rb.velocity.z);
             }
         }
 
