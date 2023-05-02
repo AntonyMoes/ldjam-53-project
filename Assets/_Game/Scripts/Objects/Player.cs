@@ -32,6 +32,11 @@ namespace _Game.Scripts.Objects {
         private float _lastVertical = 0;
         private Tween _destructionAnimation;
         private bool _killed;
+        private float _initialY;
+
+        private void Start() {
+            _initialY = transform.position.y;
+        }
 
         private void TurnSoundOn(string soundName, float volume = 0.3f, bool loop = false, bool reset = false) {
             if (_sounds.TryGetValue(soundName, out var source) && !source.isPlaying) {
@@ -169,6 +174,7 @@ namespace _Game.Scripts.Objects {
             }
 
             _rb.velocity = transform.forward * Mathf.Clamp(CurrentVelocity + delta, -_maxBackVelocity, _maxVelocity);
+            transform.position = transform.position.With(y: _initialY);
         }
 
         public void Kill(bool immediate = false) {
