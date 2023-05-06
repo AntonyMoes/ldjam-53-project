@@ -5,9 +5,9 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private Vector3 _delta;
         [SerializeField] private float _smoothSpeed;
 
-        private Player _player;
+        private Player.Player _player;
 
-        public Player Target {
+        public Player.Player Target {
             get => _player;
             set {
                 _player = value;
@@ -31,9 +31,9 @@ namespace _Game.Scripts.Objects {
                 return;
             }
 
-            var targetPosition = Target.transform.position + _delta;
+            var targetPosition = Target.Transform.position + _delta;
             transform.position = force ? targetPosition : Vector3.Lerp(transform.position, targetPosition, _smoothSpeed);
-            transform.LookAt(Target.transform);
+            transform.LookAt(Target.Transform);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using _Game.Scripts.Objects;
 using _Game.Scripts.Objects.Pedestrian;
+using _Game.Scripts.Objects.Player;
 using _Game.Scripts.UI;
 using DG.Tweening;
 using GeneralUtils;
@@ -19,7 +20,7 @@ namespace _Game.Scripts {
         [Header("Objects")]
         [SerializeField] private GameObject _map;
         [SerializeField] private CameraController _cameraController;
-        [SerializeField] private Player _playerPrefab;
+        [SerializeField] private SimplePlayer _playerPrefab;
         [SerializeField] private Transform _playerSpawn;
         [SerializeField] private Pedestrian _pedestrianPrefab;
         [SerializeField] private Transform _pedestrianParent;
@@ -261,7 +262,7 @@ namespace _Game.Scripts {
 
             var target = _currentTarget.Value;
             var targetPosition = (target.transform.position + target.Destination) / 2f;
-            var distance = Logic.Distance(targetPosition, Player.transform.position) / timerDistanceMultiplier;
+            var distance = Logic.Distance(targetPosition, Player.Transform.position) / timerDistanceMultiplier;
             var bonus = GetBonusMultiplier();
             _currentOrderTime = config.GuaranteedTimer + _multiplier * config.DefaultTimer * distance + config.BonusTimer * bonus;
             var duration =  _timer.Value + _currentOrderTime;
@@ -292,8 +293,8 @@ namespace _Game.Scripts {
         }
 
         private float GetBonusMultiplier() {
-            var forward = Player.transform.forward;
-            var toTarget = (_currentTarget.Value.transform.position - Player.transform.position).normalized;
+            var forward = Player.Transform.forward;
+            var toTarget = (_currentTarget.Value.transform.position - Player.Transform.position).normalized;
 
             return Vector3.Dot(forward, toTarget) + 1;
         }

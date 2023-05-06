@@ -22,7 +22,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
 
             var config = Locator.Instance.Config;
-            var distanceToPlayer = Vector3.Distance(GameController.Instance.Player.transform.position, Agent.transform.position);
+            var distanceToPlayer = Vector3.Distance(GameController.Instance.Player.Transform.position, Agent.transform.position);
             return distanceToPlayer <= config.EvadeRadius;
         }
 
@@ -32,7 +32,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
 
             var config = Locator.Instance.Config;
-            var distanceToPlayer = Vector3.Distance(GameController.Instance.Player.transform.position, Agent.transform.position);
+            var distanceToPlayer = Vector3.Distance(GameController.Instance.Player.Transform.position, Agent.transform.position);
             return distanceToPlayer <= config.BewareRadius;
         }
 

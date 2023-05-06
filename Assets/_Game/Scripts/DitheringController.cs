@@ -2,6 +2,7 @@
 using System.Linq;
 using _Game.Scripts.Objects;
 using _Game.Scripts.Objects.Pedestrian;
+using _Game.Scripts.Objects.Player;
 using GeneralUtils;
 using UnityEngine;
 

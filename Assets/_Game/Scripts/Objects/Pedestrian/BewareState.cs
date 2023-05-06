@@ -36,7 +36,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
         }
 
         private bool GoingInPlayerDirection() {
-            var vectorToPlayer = GameController.Instance.Player.transform.position - Agent.transform.position;
+            var vectorToPlayer = GameController.Instance.Player.Transform.position - Agent.transform.position;
 
             return Vector3.Angle(Agent.velocity, vectorToPlayer) <= 90;
         }

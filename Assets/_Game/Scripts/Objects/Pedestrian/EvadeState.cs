@@ -25,7 +25,7 @@ namespace _Game.Scripts.Objects.Pedestrian {
             }
 
             var config = Locator.Instance.Config;
-            var playerPosition = GameController.Instance.Player.transform.position;
+            var playerPosition = GameController.Instance.Player.Transform.position;
             var vectorFromPlayer = Agent.transform.position - playerPosition;
             var distanceToPlayer = vectorFromPlayer.magnitude;
             var lastDistanceToPlayer = _lastDistanceToPlayer;

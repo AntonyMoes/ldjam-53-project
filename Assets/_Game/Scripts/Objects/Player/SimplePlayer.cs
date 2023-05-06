@@ -1,17 +1,14 @@
-using GeneralUtils;
-using UnityEngine;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using GeneralUtils;
+using UnityEngine;
 using UnityEngine.VFX;
 
-namespace _Game.Scripts.Objects {
-    public class Player : MonoBehaviour {
+namespace _Game.Scripts.Objects.Player {
+    public class SimplePlayer : Player {
         [SerializeField] private Rigidbody _rb;
         [SerializeField] private Transform _lookPoint;
-        [SerializeField] private Transform[] _ditherCheckPoints;
-        public Transform[] DitherCheckPoints => _ditherCheckPoints;
         [SerializeField] private Transform _vfx;
         [SerializeField] private VisualEffect _smoke;
 
@@ -25,7 +22,7 @@ namespace _Game.Scripts.Objects {
         [SerializeField] private float _maxVelocity;
         [SerializeField] private float _maxBackVelocity;
 
-        public float MaxSpeed => _maxVelocity;
+        public override float MaxSpeed => _maxVelocity;
 
         private float CurrentVelocity => Vector3.Dot(_rb.velocity, _rb.transform.forward);
         private readonly Dictionary<string, AudioSource> _sounds = new Dictionary<string, AudioSource>();
@@ -177,7 +174,7 @@ namespace _Game.Scripts.Objects {
             transform.position = transform.position.With(y: _initialY);
         }
 
-        public void Kill(bool immediate = false) {
+        public override void Kill(bool immediate = false) {
             _killed = true;
 
             if (immediate) {
